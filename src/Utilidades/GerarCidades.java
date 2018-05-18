@@ -7,6 +7,7 @@ package Utilidades;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 /**
  *
  * @author puc
@@ -59,10 +60,12 @@ public final class GerarCidades {
     }
     
     public void criaConexaoCidades(){
-        for (int i = 0; i < 3/*listaCidades.size()*/; i++) {
-            for (int j = 0; j < 3/*listaCidades.size()*/; j++) {
+        Random gerador = new Random();
+        
+        for (int i = 0; i < listaCidades.size(); i++) {
+            for (int j = 0; j < listaCidades.size(); j++) {
                 if(i != j)
-                listaCidades.get(i).criarConexao(1, listaCidades.get(j));
+                listaCidades.get(i).criarConexao(gerador.nextInt(100), listaCidades.get(j));
             }
         }
     }
@@ -97,34 +100,40 @@ public final class GerarCidades {
         Vertice proxAnalisar = null;
         int pesoAresta;
         boolean primeiraExec = true;
-        while(aux.getMarcador() == false){              
-            for (Iterator<Aresta> iterator = aux.getConexaoDaCidade().iterator(); iterator.hasNext();) {          
-                if(primeiraExec && iterator.next().getDestino() == destino){
+        
+        while(aux.getMarcador() == false){
+            ArrayList<Aresta> cidades = aux.getConexaoDaCidade();
+            for(int i = 0; i < cidades.size(); i++){
+                if(primeiraExec && cidades.get(i).getDestino().equals(destino))
+                {
                     System.out.println("Removeu o link direto");
                     primeiraExec = false;
                 }else{
-                    pesoAresta = dist[aux.getID()] + iterator.next().getPeso();
-                    if (pesoAresta < dist[iterator.next().getDestino().getID()]) {
-                        dist[iterator.next().getDestino().getID()] = pesoAresta;
-                        antecessor[iterator.next().getDestino().getID()] = aux.getID();
-                        proxAnalisar = iterator.next().getDestino();
+                    pesoAresta = dist[aux.getID()] + cidades.get(i).getPeso();
+                    if((dist[cidades.get(i).getDestino().getID()] > pesoAresta) && cidades.get(i).getDestino().getMarcador() == false){
+                        dist[cidades.get(i).getDestino().getID()] = pesoAresta;
+                        antecessor[cidades.get(i).getDestino().getID()] = aux.getID();
+                        proxAnalisar = cidades.get(i).getDestino();
                     }
                 }
             }
             aux.ativaMarcador();
             aux = proxAnalisar;
         }
-        
+                
         ArrayList<Vertice> resultado = new ArrayList<>();
         int cidade = destino.getID();
         resultado.add(listaCidades.get(destino.getID()));
-        while(cidade != -1){
+        
+        while(cidade != origem.getID()){
             resultado.add(listaCidades.get(antecessor[cidade]));
             cidade = antecessor[cidade];
-        }
+        } 
+        
         for (int i = resultado.size(); i > 0; i--) {
-            resultado.get(i).imprimirCidade();
+            resultado.get(i-1).imprimirCidade();
         }
+       
         return resultado;
     }
     
