@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package main;
+import Utilidades.GerarCidades;
 
 /**
  *
@@ -15,6 +16,15 @@ public class VendaPassagem {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        GerarCidades objCidades = new GerarCidades();
+        objCidades.criaConexaoCidades();
+        
+        /*for (int i = 0; i < 26; i++) {
+            objCidades.getCidadesConectadas().get(0).getConexaoDaCidade().get(i).getDestino().imprimirCidade();
+        }*/
+        
+        objCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(0), objCidades.getCidadesConectadas().get(2));
+        /*
         FactoryPessoa factory = new FactoryPessoa();
         Pessoa pessoa;
         
@@ -26,7 +36,7 @@ public class VendaPassagem {
             System.out.println("O sexo do passageiro é: " + pessoa.getSexo());
         } catch (Exception excep) {
             System.out.println(excep.getMessage());
-        }       
+        }*/
     }
     
 }
