@@ -5,7 +5,7 @@
  */
 package main;
 import Utilidades.GerarCidades;
-
+import Formulario.formPrincipal;
 /**
  *
  * @author diego
@@ -19,11 +19,10 @@ public class VendaPassagem {
         GerarCidades objCidades = new GerarCidades();
         objCidades.criaConexaoCidades();
         
-        /*for (int i = 0; i < 26; i++) {
-            objCidades.getCidadesConectadas().get(0).getConexaoDaCidade().get(i).getDestino().imprimirCidade();
-        }*/
+        objCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(1), objCidades.getCidadesConectadas().get(9));
         
-        objCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(0), objCidades.getCidadesConectadas().get(2));
+        formPrincipal form = new formPrincipal();
+        form.setVisible(true);
         /*
         FactoryPessoa factory = new FactoryPessoa();
         Pessoa pessoa;
