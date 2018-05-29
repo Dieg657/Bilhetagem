@@ -254,7 +254,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
           <Properties>
-            <Property name="text" type="java.lang.String" value="CNPJ:"/>
+            <Property name="text" type="java.lang.String" value="*CNPJ:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="jFormattedTextField2">

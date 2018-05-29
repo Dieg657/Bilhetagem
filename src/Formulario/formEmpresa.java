@@ -78,7 +78,7 @@ public class formEmpresa extends javax.swing.JFrame {
 
         jLabel9.setText("Observações:");
 
-        jLabel10.setText("CNPJ:");
+        jLabel10.setText("*CNPJ:");
 
         jScrollPane1.setViewportView(jTextPane1);
 

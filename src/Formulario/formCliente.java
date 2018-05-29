@@ -74,7 +74,7 @@ public class formCliente extends javax.swing.JFrame {
 
         jLabel5.setText("Data de Nascimento:");
 
-        jLabel6.setText("CPF:");
+        jLabel6.setText("*CPF:");
 
         jLabel7.setText("Endereço:");
 
