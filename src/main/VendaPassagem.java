@@ -4,8 +4,12 @@
  * and open the template in the editor.
  */
 package main;
+import DAO.SQLConnect;
 import Utilidades.GerarCidades;
 import Formulario.formPrincipal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 /**
  *
  * @author diego
@@ -14,8 +18,9 @@ public class VendaPassagem {
 
     /**
      * @param args the command line arguments
+     * @throws java.sql.SQLException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         GerarCidades objCidades = new GerarCidades();
         objCidades.criaConexaoCidades();
         
@@ -23,6 +28,17 @@ public class VendaPassagem {
         
         formPrincipal form = new formPrincipal();
         form.setVisible(true);
+        
+        SQLConnect.getInstance();
+        String sql = "SELECT * FROM tb_status";
+        Statement stmt = SQLConnect.getInstance().createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+        
+        while (rs.next()) {            
+            System.out.println("ID: " + rs.getInt("id_status") + ", Status: " + rs.getString("status"));
+        }
+        
+        
         /*
         FactoryPessoa factory = new FactoryPessoa();
         Pessoa pessoa;
