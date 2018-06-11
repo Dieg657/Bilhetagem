@@ -56,7 +56,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_funcionario` (
   `nm_func` VARCHAR(255) NULL,
   `cpf_func` BIGINT(20) NOT NULL,
-  `idtel_func` INT NULL,
+  `tel_func` INT(20) NULL,
   `email_func` VARCHAR(150) NULL,
   `idsexo_func` INT NULL,
   `obs_func` TEXT(999) NULL,
@@ -161,7 +161,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_voo_poltrona` (
   `idtb_voo_poltrona` INT NOT NULL AUTO_INCREMENT,
   `voo_tag` VARCHAR(45) NOT NULL,
-  `poltrona` VARCHAR(45) NOT NULL,
+  `poltrona` INT NOT NULL,
   `localizador` VARCHAR(45) NULL,
   `status` INT NOT NULL,
   INDEX `fk_tb_voo_poltrona_tb_voo1_idx` (`voo_tag` ASC),
@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_usuario_func` (
   `usuario` VARCHAR(45) NULL,
   `senha` VARCHAR(45) NULL,
   INDEX `fk_tb_usuario_func_tb_funcionario1_idx` (`cpf_func` ASC),
+  PRIMARY KEY (`cpf_func`),
   CONSTRAINT `fk_tb_usuario_func_tb_funcionario1`
     FOREIGN KEY (`cpf_func`)
     REFERENCES `aviao`.`tb_funcionario` (`cpf_func`)
@@ -230,6 +231,36 @@ USE `aviao`;
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (1, 'Livre');
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (2, 'Ocupada');
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (3, 'Manutenção');
+
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Acre','AC');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Alagoas','AL'); 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amapá','AP');
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amazonas','AM');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Bahia','BA');
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Ceará','CE'); 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Distrito Federal','DF');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Espírito Santo','ES');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Goiás','GO');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Maranhão','MA');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Mato Grosso','MT');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Mato Grosso do Sul','MS');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Minas Gerais','MG');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Pará','PA');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Paraíba','PB');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Paraná','PR');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Pernambuco','PE');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Piauí','PI');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio de Janeiro','RJ');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio Grande do Norte','RN');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio Grande do Sul','RS');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rondônia','RO');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Roraima','RR');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Santa Catarina','SC');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('São Paulo','SP');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Sergipe','SE');
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Tocantins', 'TO');
+
+
 
 COMMIT;
 

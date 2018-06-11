@@ -24,12 +24,14 @@ import javax.swing.JPanel;
  * @author diego.soares
  */
 public class formEditPoltrona extends javax.swing.JFrame {
-
+    FormUtils objUForm;
     /**
      * Creates new form formEditPoltrona
      */
     public formEditPoltrona() {
         initComponents();
+        objUForm = new FormUtils();
+        objUForm.carregaComboBoxStatus(jComboBox1);
     }
 
     /**

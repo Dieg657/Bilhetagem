@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package main;
+import DAO.ClassesDB.Status;
 import DAO.SQLConnect;
 import Utilidades.GerarCidades;
 import Formulario.formPrincipal;
@@ -30,14 +31,14 @@ public class VendaPassagem {
         form.setVisible(true);
         
         SQLConnect.getInstance();
-        String sql = "SELECT * FROM tb_status";
-        Statement stmt = SQLConnect.getInstance().createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        //String sql = "SELECT * FROM tb_status";
+        //Statement stmt = SQLConnect.getInstance().createStatement();
+        //ResultSet rs = stmt.executeQuery(sql);
         
-        while (rs.next()) {            
-            System.out.println("ID: " + rs.getInt("id_status") + ", Status: " + rs.getString("status"));
-        }
-        
+        //while (rs.next()) {            
+        //    System.out.println("ID: " + rs.getInt("id_status") + ", Status: " + rs.getString("status"));
+        //}
+                        
         
         /*
         FactoryPessoa factory = new FactoryPessoa();
