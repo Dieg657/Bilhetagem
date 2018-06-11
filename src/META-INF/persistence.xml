@@ -2,18 +2,28 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="VendaPassagemPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>DAO.ClassesDB.Estado</class>
     <class>DAO.ClassesDB.UsuarioCliente</class>
+    <class>DAO.ClassesDB.UsuarioFuncionario</class>
+    <class>DAO.ClassesDB.VooPoltrona</class>
+    <class>DAO.ClassesDB.Passagem</class>
+    <class>DAO.ClassesDB.Empresa</class>
+    <class>DAO.ClassesDB.Funcionario</class>
+    <class>DAO.ClassesDB.Status</class>
     <class>DAO.ClassesDB.Cliente</class>
     <class>DAO.ClassesDB.Voo</class>
-    <class>DAO.ClassesDB.Empresa</class>
-    <class>DAO.ClassesDB.Estado</class>
-    <class>DAO.ClassesDB.Status</class>
-    <class>DAO.ClassesDB.Funcionario</class>
-    <class>DAO.ClassesDB.Passagem</class>
-    <class>DAO.ClassesDB.VooPoltrona</class>
-    <class>DAO.ClassesDB.UsuarioFuncionario</class>
+    <class>DAO.ClassesDB.TbCliente</class>
+    <class>DAO.ClassesDB.TbVoo</class>
+    <class>DAO.ClassesDB.TbVooPoltrona</class>
+    <class>DAO.ClassesDB.TbStatus</class>
+    <class>DAO.ClassesDB.TbUsuarioFunc</class>
+    <class>DAO.ClassesDB.TbEstado</class>
+    <class>DAO.ClassesDB.TbFuncionario</class>
+    <class>DAO.ClassesDB.TbUsuarioCli</class>
+    <class>DAO.ClassesDB.TbPassagem</class>
+    <class>DAO.ClassesDB.TbEmpresa</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/aviao?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/aviao?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;zeroDateTimeBehavior=exception"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="12345"/>

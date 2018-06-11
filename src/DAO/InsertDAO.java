@@ -6,21 +6,23 @@
 package DAO;
 
 import DAO.ClassesDB.*;
-import com.mysql.jdbc.PreparedStatement;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author diego
  */
-public class InsertDAO extends DAO{
+public final class InsertDAO extends DAO{
     
     public InsertDAO(){
         // do nothing
     }
     
+    private String operacao;
         
     //Cliente
     private static final String insertCliente = "INSERT INTO `aviao`.`tb_cliente`\n" +
@@ -207,7 +209,7 @@ public class InsertDAO extends DAO{
         preparaSQL.setString(2, cliente.getDocCli());
         preparaSQL.setString(3, cliente.getOrgCli());
         preparaSQL.setInt(4, cliente.getIdufCli().getIdEstado());
-        preparaSQL.setDate(5, (Date) cliente.getDtnascCli());
+        preparaSQL.setDate(5, new java.sql.Date(cliente.getDtnascCli().getTime()));
         preparaSQL.setLong(6, cliente.getCpfCli());
         preparaSQL.setString(7, cliente.getEndCli());
         preparaSQL.setString(8, cliente.getNumCli());
@@ -215,6 +217,7 @@ public class InsertDAO extends DAO{
         preparaSQL.setString(10, cliente.getBairroCli());
         preparaSQL.setString(11, cliente.getCidadeCli());
         preparaSQL.setInt(12, cliente.getIdestCli().getIdEstado());
+        System.out.println("ID Estado: " + cliente.getIdestCli().getIdEstado());
         preparaSQL.setString(13, cliente.getEmailCli());
         preparaSQL.setString(14, cliente.getObsCli());
     }
@@ -264,5 +267,136 @@ public class InsertDAO extends DAO{
         preparaSQL.setTime(5, (Time) voo.getHrPartida());
         preparaSQL.setLong(6, voo.getCpnjEmp().getCnpj());
         preparaSQL.setLong(7, voo.getVlVoo());
+    }
+    
+    void gravaCliente(Cliente cliente) throws SQLException{
+        
+        try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertCliente());
+            setCliente(cliente);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+        
+    }
+      
+    void gravaFuncionario(Funcionario funcionario) throws SQLException{
+         try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertFuncionario());
+            setFuncionario(funcionario);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+    void gravaVoo(Voo voo) throws SQLException{
+         try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertVoo());
+            setVoo(voo);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+    void gravaVooPoltrona(VooPoltrona poltrona) throws SQLException{
+         try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertVooPoltrona());
+            setVooPoltrona(poltrona);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+    void gravaPassagem(Passagem passagem) throws SQLException{
+         try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertPassagem());
+            setPassagem(passagem);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+
+    @Override
+    public void insertDataDB(Object obj) {
+        switch(obj.getClass().getName()){
+            case "DAO.ClassesDB.Cliente":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    gravaCliente((Cliente) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "DAO.ClassesDB.Funcionario":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.Voo":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.VooPoltrona":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+             case "DAO.ClassesDB.Passagem":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.Empresa":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.UsuarioCliente":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.UsuarioFuncionario":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            default:{
+                System.out.println("Classe nula: " + obj.getClass().getName());
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void updateDataDB(Object obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getOperacao() {
+        return this.operacao;
+    }
+
+    @Override
+    public void setOperacao(String operacao) {
+        this.operacao = operacao;
     }
 }

@@ -5,8 +5,6 @@
  */
 package DAO.ClassesDB;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -20,13 +18,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_estado")
@@ -37,9 +34,6 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Estado.findByEstado", query = "SELECT e FROM Estado e WHERE e.estado = :estado")
     , @NamedQuery(name = "Estado.findByUf", query = "SELECT e FROM Estado e WHERE e.uf = :uf")})
 public class Estado implements Serializable {
-
-    @Transient
-    private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -70,9 +64,7 @@ public class Estado implements Serializable {
     }
 
     public void setIdEstado(Integer idEstado) {
-        Integer oldIdEstado = this.idEstado;
         this.idEstado = idEstado;
-        changeSupport.firePropertyChange("idEstado", oldIdEstado, idEstado);
     }
 
     public String getEstado() {
@@ -80,9 +72,7 @@ public class Estado implements Serializable {
     }
 
     public void setEstado(String estado) {
-        String oldEstado = this.estado;
         this.estado = estado;
-        changeSupport.firePropertyChange("estado", oldEstado, estado);
     }
 
     public String getUf() {
@@ -90,9 +80,7 @@ public class Estado implements Serializable {
     }
 
     public void setUf(String uf) {
-        String oldUf = this.uf;
         this.uf = uf;
-        changeSupport.firePropertyChange("uf", oldUf, uf);
     }
 
     @XmlTransient
@@ -144,15 +132,7 @@ public class Estado implements Serializable {
 
     @Override
     public String toString() {
-        return "DAO.Pessoa.Estado[ idEstado=" + idEstado + " ]";
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        changeSupport.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        changeSupport.removePropertyChangeListener(listener);
+        return "DAO.ClassesDB.Estado[ idEstado=" + idEstado + " ]";
     }
     
 }

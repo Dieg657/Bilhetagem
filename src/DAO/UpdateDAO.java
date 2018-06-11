@@ -9,12 +9,15 @@ package DAO;
  *
  * @author diego
  */
-public class UpdateDAO {
+public final class UpdateDAO extends DAO {
     
     public UpdateDAO(){
-        //
+        
     }
-      private static final String updateCliente = "UPDATE `aviao`.`tb_cliente`\n" +
+    
+    private String operacao;
+    
+    private static final String updateCliente = "UPDATE `aviao`.`tb_cliente`\n" +
             "SET\n" +
             "`nm_cli` = ?,\n" +
             "`doc_cli` = ?,\n" +
@@ -152,6 +155,27 @@ public class UpdateDAO {
      */
     private String getUpdatePassagem() {
         return updatePassagem;
+    }
+
+    @Override
+    public void insertDataDB(Object obj) {
+        throw new UnsupportedOperationException("Não é possível inserir numa consulta de atualização"); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateDataDB(Object obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getOperacao() {
+        return this.operacao;
+    }
+    
+
+    @Override
+    public void setOperacao(String operacao) {
+        this.operacao = operacao;
     }
     
    

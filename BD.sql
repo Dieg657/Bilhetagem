@@ -56,7 +56,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_funcionario` (
   `nm_func` VARCHAR(255) NULL,
   `cpf_func` BIGINT(20) NOT NULL,
-  `tel_func` INT(20) NULL,
+  `idtel_func` INT NULL,
   `email_func` VARCHAR(150) NULL,
   `idsexo_func` INT NULL,
   `obs_func` TEXT(999) NULL,
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_voo` (
   `origem` VARCHAR(45) NOT NULL,
   `destino` VARCHAR(45) NOT NULL,
   `dt_partida` DATE NOT NULL,
-  `hr_partida` TIME(0) NOT NULL,
+  `hr_partida` TIME(0) NULL,
   `cpnj_emp` BIGINT(20) NOT NULL,
   `vl_voo` DECIMAL NOT NULL,
   PRIMARY KEY (`voo_tag`),
@@ -161,7 +161,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_voo_poltrona` (
   `idtb_voo_poltrona` INT NOT NULL AUTO_INCREMENT,
   `voo_tag` VARCHAR(45) NOT NULL,
-  `poltrona` INT NOT NULL,
+  `poltrona` VARCHAR(45) NOT NULL,
   `localizador` VARCHAR(45) NULL,
   `status` INT NOT NULL,
   INDEX `fk_tb_voo_poltrona_tb_voo1_idx` (`voo_tag` ASC),
@@ -194,7 +194,6 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_usuario_func` (
   `usuario` VARCHAR(45) NULL,
   `senha` VARCHAR(45) NULL,
   INDEX `fk_tb_usuario_func_tb_funcionario1_idx` (`cpf_func` ASC),
-  PRIMARY KEY (`cpf_func`),
   CONSTRAINT `fk_tb_usuario_func_tb_funcionario1`
     FOREIGN KEY (`cpf_func`)
     REFERENCES `aviao`.`tb_funcionario` (`cpf_func`)
@@ -227,7 +226,9 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- Data for table `aviao`.`tb_status`
 -- -----------------------------------------------------
 START TRANSACTION;
+
 USE `aviao`;
+
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (1, 'Livre');
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (2, 'Ocupada');
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (3, 'Manutenção');
@@ -259,7 +260,6 @@ INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Santa Catarina','SC');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('São Paulo','SP');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Sergipe','SE');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Tocantins', 'TO');
-
 
 
 COMMIT;

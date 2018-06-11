@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,13 +18,16 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_status")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Status.findAll", query = "SELECT s FROM Status s")
     , @NamedQuery(name = "Status.findByIdStatus", query = "SELECT s FROM Status s WHERE s.idStatus = :idStatus")
@@ -40,7 +42,7 @@ public class Status implements Serializable {
     private Integer idStatus;
     @Column(name = "status")
     private String status;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "status", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
     private Collection<VooPoltrona> vooPoltronaCollection;
 
     public Status() {
@@ -66,6 +68,7 @@ public class Status implements Serializable {
         this.status = status;
     }
 
+    @XmlTransient
     public Collection<VooPoltrona> getVooPoltronaCollection() {
         return vooPoltronaCollection;
     }
@@ -96,7 +99,7 @@ public class Status implements Serializable {
 
     @Override
     public String toString() {
-        return "DAO.Pessoa.Status[ idStatus=" + idStatus + " ]";
+        return "DAO.ClassesDB.Status[ idStatus=" + idStatus + " ]";
     }
     
 }

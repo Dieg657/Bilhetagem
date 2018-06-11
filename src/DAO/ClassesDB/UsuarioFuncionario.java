@@ -15,13 +15,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_usuario_func")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UsuarioFuncionario.findAll", query = "SELECT u FROM UsuarioFuncionario u")
     , @NamedQuery(name = "UsuarioFuncionario.findByCpfFunc", query = "SELECT u FROM UsuarioFuncionario u WHERE u.cpfFunc = :cpfFunc")

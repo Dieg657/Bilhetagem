@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -25,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_empresa")
@@ -42,9 +41,6 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Empresa.findByCepEmp", query = "SELECT e FROM Empresa e WHERE e.cepEmp = :cepEmp")
     , @NamedQuery(name = "Empresa.findByEmailEmp", query = "SELECT e FROM Empresa e WHERE e.emailEmp = :emailEmp")})
 public class Empresa implements Serializable {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cpnjEmp", fetch = FetchType.LAZY)
-    private Collection<Voo> vooCollection;
 
     private static final long serialVersionUID = 1L;
     @Column(name = "fantasia_emp")
@@ -70,6 +66,8 @@ public class Empresa implements Serializable {
     @Lob
     @Column(name = "obs_emp")
     private String obsEmp;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cpnjEmp")
+    private Collection<Voo> vooCollection;
     @JoinColumn(name = "idest_emp", referencedColumnName = "id_estado")
     @ManyToOne(optional = false)
     private Estado idestEmp;
@@ -163,6 +161,15 @@ public class Empresa implements Serializable {
         this.obsEmp = obsEmp;
     }
 
+    @XmlTransient
+    public Collection<Voo> getVooCollection() {
+        return vooCollection;
+    }
+
+    public void setVooCollection(Collection<Voo> vooCollection) {
+        this.vooCollection = vooCollection;
+    }
+
     public Estado getIdestEmp() {
         return idestEmp;
     }
@@ -202,15 +209,7 @@ public class Empresa implements Serializable {
 
     @Override
     public String toString() {
-        return "DAO.Pessoa.Empresa[ cnpj=" + cnpj + " ]";
-    }
-
-    public Collection<Voo> getVooCollection() {
-        return vooCollection;
-    }
-
-    public void setVooCollection(Collection<Voo> vooCollection) {
-        this.vooCollection = vooCollection;
+        return "DAO.ClassesDB.Empresa[ cnpj=" + cnpj + " ]";
     }
     
 }

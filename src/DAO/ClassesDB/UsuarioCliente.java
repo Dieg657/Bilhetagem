@@ -9,20 +9,21 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_usuario_cli")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UsuarioCliente.findAll", query = "SELECT u FROM UsuarioCliente u")
     , @NamedQuery(name = "UsuarioCliente.findByCpfCli", query = "SELECT u FROM UsuarioCliente u WHERE u.cpfCli = :cpfCli")
@@ -42,7 +43,7 @@ public class UsuarioCliente implements Serializable {
     @Column(name = "senha")
     private String senha;
     @JoinColumn(name = "cpf_cli", referencedColumnName = "cpf_cli", insertable = false, updatable = false)
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @OneToOne(optional = false)
     private Cliente cliente;
 
     public UsuarioCliente() {
@@ -112,7 +113,7 @@ public class UsuarioCliente implements Serializable {
 
     @Override
     public String toString() {
-        return "DAO.Pessoa.UsuarioCliente[ cpfCli=" + cpfCli + " ]";
+        return "DAO.ClassesDB.UsuarioCliente[ cpfCli=" + cpfCli + " ]";
     }
     
 }

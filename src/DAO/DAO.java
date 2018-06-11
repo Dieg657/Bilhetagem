@@ -15,7 +15,7 @@ import DAO.ClassesDB.UsuarioCliente;
 import DAO.ClassesDB.UsuarioFuncionario;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
-import com.mysql.jdbc.PreparedStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -25,7 +25,7 @@ import java.sql.SQLException;
  *
  * @author diego
  */
-public class DAO{
+public abstract class DAO{
     protected static PreparedStatement preparaSQL;
     protected static ResultSet resultadoSQL;
     protected Empresa empresa;
@@ -39,9 +39,7 @@ public class DAO{
     protected VooPoltrona poltrona;
     protected Passagem passagem;
     protected Status statusPoltrona;
-    
-    
-    
+        
     static void closeAll() {
         try {
             preparaSQL.close();
@@ -54,5 +52,10 @@ public class DAO{
             System.out.println(ex.getMessage() + "\nNão foi possível encerrar o preparo da consulta!");
         }
     }
-
+    
+    public abstract void insertDataDB(Object obj);
+    public abstract void updateDataDB(Object obj);
+    public abstract String getOperacao();
+    public abstract void setOperacao(String operacao);
+    
 }

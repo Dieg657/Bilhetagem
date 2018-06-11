@@ -13,7 +13,7 @@ import DAO.ClassesDB.Passagem;
 import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
-import com.mysql.jdbc.PreparedStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author diego
  */
-public class SelectDAO extends DAO{
+public final class SelectDAO extends DAO{
     
     public SelectDAO(){
         
@@ -313,5 +313,25 @@ public class SelectDAO extends DAO{
             closeAll();
         }
         return null;
+    }
+
+    @Override
+    public void insertDataDB(Object obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateDataDB(Object obj) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getOperacao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setOperacao(String operacao) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

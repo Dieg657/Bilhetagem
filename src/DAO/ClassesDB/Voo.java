@@ -12,7 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,13 +21,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_voo")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Voo.findAll", query = "SELECT v FROM Voo v")
     , @NamedQuery(name = "Voo.findByVooTag", query = "SELECT v FROM Voo v WHERE v.vooTag = :vooTag")
@@ -62,9 +64,9 @@ public class Voo implements Serializable {
     @Column(name = "vl_voo")
     private long vlVoo;
     @JoinColumn(name = "cpnj_emp", referencedColumnName = "cnpj")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private Empresa cpnjEmp;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vooTag", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vooTag")
     private Collection<VooPoltrona> vooPoltronaCollection;
 
     public Voo() {
@@ -139,6 +141,7 @@ public class Voo implements Serializable {
         this.cpnjEmp = cpnjEmp;
     }
 
+    @XmlTransient
     public Collection<VooPoltrona> getVooPoltronaCollection() {
         return vooPoltronaCollection;
     }
@@ -169,7 +172,7 @@ public class Voo implements Serializable {
 
     @Override
     public String toString() {
-        return "DAO.Pessoa.Voo[ vooTag=" + vooTag + " ]";
+        return "DAO.ClassesDB.Voo[ vooTag=" + vooTag + " ]";
     }
     
 }

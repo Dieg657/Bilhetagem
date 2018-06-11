@@ -12,7 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -25,10 +24,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego
+ * @author diego.soares
  */
 @Entity
 @Table(name = "tb_cliente")
@@ -47,11 +47,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Cliente.findByCidadeCli", query = "SELECT c FROM Cliente c WHERE c.cidadeCli = :cidadeCli")
     , @NamedQuery(name = "Cliente.findByEmailCli", query = "SELECT c FROM Cliente c WHERE c.emailCli = :emailCli")})
 public class Cliente implements Serializable {
-
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "cliente", fetch = FetchType.LAZY)
-    private UsuarioCliente usuarioCliente;
-    @OneToMany(mappedBy = "cpfPassageiro", fetch = FetchType.LAZY)
-    private Collection<Passagem> passagemCollection;
 
     private static final long serialVersionUID = 1L;
     @Column(name = "nm_cli")
@@ -82,6 +77,10 @@ public class Cliente implements Serializable {
     @Lob
     @Column(name = "obs_cli")
     private String obsCli;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "cliente")
+    private UsuarioCliente usuarioCliente;
+    @OneToMany(mappedBy = "cpfPassageiro")
+    private Collection<Passagem> passagemCollection;
     @JoinColumn(name = "iduf_cli", referencedColumnName = "id_estado")
     @ManyToOne(optional = false)
     private Estado idufCli;
@@ -192,6 +191,23 @@ public class Cliente implements Serializable {
         this.obsCli = obsCli;
     }
 
+    public UsuarioCliente getUsuarioCliente() {
+        return usuarioCliente;
+    }
+
+    public void setUsuarioCliente(UsuarioCliente usuarioCliente) {
+        this.usuarioCliente = usuarioCliente;
+    }
+
+    @XmlTransient
+    public Collection<Passagem> getPassagemCollection() {
+        return passagemCollection;
+    }
+
+    public void setPassagemCollection(Collection<Passagem> passagemCollection) {
+        this.passagemCollection = passagemCollection;
+    }
+
     public Estado getIdufCli() {
         return idufCli;
     }
@@ -230,23 +246,7 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "DAO.Pessoa.Cliente[ cpfCli=" + cpfCli + " ]";
-    }
-
-    public UsuarioCliente getUsuarioCliente() {
-        return usuarioCliente;
-    }
-
-    public void setUsuarioCliente(UsuarioCliente usuarioCliente) {
-        this.usuarioCliente = usuarioCliente;
-    }
-
-    public Collection<Passagem> getPassagemCollection() {
-        return passagemCollection;
-    }
-
-    public void setPassagemCollection(Collection<Passagem> passagemCollection) {
-        this.passagemCollection = passagemCollection;
+        return "DAO.ClassesDB.Cliente[ cpfCli=" + cpfCli + " ]";
     }
     
 }
