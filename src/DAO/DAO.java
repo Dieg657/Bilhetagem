@@ -57,5 +57,4 @@ public abstract class DAO{
     public abstract void updateDataDB(Object obj);
     public abstract String getOperacao();
     public abstract void setOperacao(String operacao);
-    
 }

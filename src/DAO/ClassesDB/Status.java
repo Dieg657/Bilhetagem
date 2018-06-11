@@ -18,16 +18,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_status")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Status.findAll", query = "SELECT s FROM Status s")
     , @NamedQuery(name = "Status.findByIdStatus", query = "SELECT s FROM Status s WHERE s.idStatus = :idStatus")
@@ -68,7 +65,6 @@ public class Status implements Serializable {
         this.status = status;
     }
 
-    @XmlTransient
     public Collection<VooPoltrona> getVooPoltronaCollection() {
         return vooPoltronaCollection;
     }

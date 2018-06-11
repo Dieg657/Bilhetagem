@@ -15,15 +15,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_usuario_func")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UsuarioFuncionario.findAll", query = "SELECT u FROM UsuarioFuncionario u")
     , @NamedQuery(name = "UsuarioFuncionario.findByCpfFunc", query = "SELECT u FROM UsuarioFuncionario u WHERE u.cpfFunc = :cpfFunc")
@@ -35,7 +33,7 @@ public class UsuarioFuncionario implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "cpf_func")
-    private Long cpfFunc;
+    private String cpfFunc;
     @Column(name = "usuario")
     private String usuario;
     @Column(name = "senha")
@@ -47,15 +45,15 @@ public class UsuarioFuncionario implements Serializable {
     public UsuarioFuncionario() {
     }
 
-    public UsuarioFuncionario(Long cpfFunc) {
+    public UsuarioFuncionario(String cpfFunc) {
         this.cpfFunc = cpfFunc;
     }
 
-    public Long getCpfFunc() {
+    public String getCpfFunc() {
         return cpfFunc;
     }
 
-    public void setCpfFunc(Long cpfFunc) {
+    public void setCpfFunc(String cpfFunc) {
         this.cpfFunc = cpfFunc;
     }
 

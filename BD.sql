@@ -31,10 +31,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_empresa` (
   `fantasia_emp` VARCHAR(45) NULL,
   `inest_emp` VARCHAR(45) NULL,
-  `cnpj` BIGINT(20) NOT NULL,
+  `cnpj` VARCHAR(20) NOT NULL,
   `end_emp` VARCHAR(200) NULL,
   `num_empresa` VARCHAR(45) NULL,
   `compl_emp` VARCHAR(45) NULL,
+  `bairro_emp` VARCHAR(45) NULL,
   `cidade_emp` VARCHAR(45) NULL,
   `idest_emp` INT NOT NULL,
   `cep_emp` INT NULL,
@@ -55,12 +56,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_funcionario` (
   `nm_func` VARCHAR(255) NULL,
-  `cpf_func` BIGINT(20) NOT NULL,
-  `idtel_func` INT NULL,
+  `cpf_func` VARCHAR(20) NOT NULL,
+  `tel_func` VARCHAR(20) NULL,
   `email_func` VARCHAR(150) NULL,
   `idsexo_func` INT NULL,
   `obs_func` TEXT(999) NULL,
-  `cnpj_emp` BIGINT(20) NOT NULL,
+  `cnpj_emp` VARCHAR(20) NOT NULL,
   UNIQUE INDEX `cpf_UNIQUE` (`cpf_func` ASC),
   PRIMARY KEY (`cpf_func`),
   INDEX `fk_tb_funcionario_tb_empresa1_idx` (`cnpj_emp` ASC),
@@ -81,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_cliente` (
   `org_cli` VARCHAR(45) NULL,
   `iduf_cli` INT NOT NULL,
   `dtnasc_cli` DATE NULL,
-  `cpf_cli` BIGINT(20) NOT NULL,
+  `cpf_cli` VARCHAR(20) NOT NULL,
   `end_cli` VARCHAR(200) NULL,
   `num_cli` VARCHAR(45) NULL,
   `compl_cli` VARCHAR(45) NULL,
@@ -115,8 +116,8 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_voo` (
   `origem` VARCHAR(45) NOT NULL,
   `destino` VARCHAR(45) NOT NULL,
   `dt_partida` DATE NOT NULL,
-  `hr_partida` TIME(0) NULL,
-  `cpnj_emp` BIGINT(20) NOT NULL,
+  `hr_partida` TIME(0) NOT NULL,
+  `cpnj_emp` VARCHAR(20) NOT NULL,
   `vl_voo` DECIMAL NOT NULL,
   PRIMARY KEY (`voo_tag`),
   INDEX `fk_tb_voo_tb_empresa1_idx` (`cpnj_emp` ASC),
@@ -132,7 +133,7 @@ ENGINE = InnoDB;
 -- Table `aviao`.`tb_passagem`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_passagem` (
-  `cpf_passageiro` BIGINT(20) NULL,
+  `cpf_passageiro` VARCHAR(20) NULL,
   `pass_bagagem` INT NULL,
   `pass_localizador` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`pass_localizador`),
@@ -161,7 +162,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_voo_poltrona` (
   `idtb_voo_poltrona` INT NOT NULL AUTO_INCREMENT,
   `voo_tag` VARCHAR(45) NOT NULL,
-  `poltrona` VARCHAR(45) NOT NULL,
+  `poltrona` INT NOT NULL,
   `localizador` VARCHAR(45) NULL,
   `status` INT NOT NULL,
   INDEX `fk_tb_voo_poltrona_tb_voo1_idx` (`voo_tag` ASC),
@@ -190,10 +191,11 @@ ENGINE = InnoDB;
 -- Table `aviao`.`tb_usuario_func`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_usuario_func` (
-  `cpf_func` BIGINT(20) NOT NULL,
+  `cpf_func` VARCHAR(20) NOT NULL,
   `usuario` VARCHAR(45) NULL,
   `senha` VARCHAR(45) NULL,
   INDEX `fk_tb_usuario_func_tb_funcionario1_idx` (`cpf_func` ASC),
+  PRIMARY KEY (`cpf_func`),
   CONSTRAINT `fk_tb_usuario_func_tb_funcionario1`
     FOREIGN KEY (`cpf_func`)
     REFERENCES `aviao`.`tb_funcionario` (`cpf_func`)
@@ -206,7 +208,7 @@ ENGINE = InnoDB;
 -- Table `aviao`.`tb_usuario_cli`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_usuario_cli` (
-  `cpf_cli` BIGINT(20) NOT NULL,
+  `cpf_cli` VARCHAR(20) NOT NULL,
   `usuario` VARCHAR(45) NOT NULL,
   `senha` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`cpf_cli`),
@@ -263,4 +265,6 @@ INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Tocantins', 'TO');
 
 
 COMMIT;
+
+
 

@@ -23,16 +23,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_cliente")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c")
     , @NamedQuery(name = "Cliente.findByNmCli", query = "SELECT c FROM Cliente c WHERE c.nmCli = :nmCli")
@@ -61,7 +58,7 @@ public class Cliente implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "cpf_cli")
-    private Long cpfCli;
+    private String cpfCli;
     @Column(name = "end_cli")
     private String endCli;
     @Column(name = "num_cli")
@@ -91,7 +88,7 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
-    public Cliente(Long cpfCli) {
+    public Cliente(String cpfCli) {
         this.cpfCli = cpfCli;
     }
 
@@ -127,11 +124,11 @@ public class Cliente implements Serializable {
         this.dtnascCli = dtnascCli;
     }
 
-    public Long getCpfCli() {
+    public String getCpfCli() {
         return cpfCli;
     }
 
-    public void setCpfCli(Long cpfCli) {
+    public void setCpfCli(String cpfCli) {
         this.cpfCli = cpfCli;
     }
 
@@ -199,7 +196,6 @@ public class Cliente implements Serializable {
         this.usuarioCliente = usuarioCliente;
     }
 
-    @XmlTransient
     public Collection<Passagem> getPassagemCollection() {
         return passagemCollection;
     }

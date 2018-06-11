@@ -28,6 +28,16 @@ public final class Facade {
         }
     }
     
+     public void updateDataDB(String operacao, Object obj){
+        try {
+            factoryDAO = new FactoryDAO();
+            objDAO = factoryDAO.getDAO(operacao.toLowerCase());
+            objDAO.updateDataDB(obj);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados!");
+        }
+    }
+    
     public static synchronized Facade getInstance(){
         try {
              if(singleton == null){

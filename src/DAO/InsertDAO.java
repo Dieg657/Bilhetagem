@@ -62,7 +62,7 @@ public final class InsertDAO extends DAO{
     private static final String insertFuncionario = "INSERT INTO `aviao`.`tb_funcionario`\n" +
             "(`nm_func`,\n" +
             "`cpf_func`,\n" +
-            "`idtel_func`,\n" +
+            "`tel_func`,\n" +
             "`email_func`,\n" +
             "`idsexo_func`,\n" +
             "`obs_func`,\n" +
@@ -70,7 +70,7 @@ public final class InsertDAO extends DAO{
             "VALUES\n" +
             "( ? ,\n" +
             " ? ,\n" +
-            " ? >,\n" +
+            " ? ,\n" +
             " ? ,\n" +
             " ? ,\n" +
             " ? ,\n" +
@@ -210,14 +210,13 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(3, cliente.getOrgCli());
         preparaSQL.setInt(4, cliente.getIdufCli().getIdEstado());
         preparaSQL.setDate(5, new java.sql.Date(cliente.getDtnascCli().getTime()));
-        preparaSQL.setLong(6, cliente.getCpfCli());
+        preparaSQL.setString(6, cliente.getCpfCli());
         preparaSQL.setString(7, cliente.getEndCli());
         preparaSQL.setString(8, cliente.getNumCli());
         preparaSQL.setString(9, cliente.getComplCli());
         preparaSQL.setString(10, cliente.getBairroCli());
         preparaSQL.setString(11, cliente.getCidadeCli());
         preparaSQL.setInt(12, cliente.getIdestCli().getIdEstado());
-        System.out.println("ID Estado: " + cliente.getIdestCli().getIdEstado());
         preparaSQL.setString(13, cliente.getEmailCli());
         preparaSQL.setString(14, cliente.getObsCli());
     }
@@ -225,7 +224,7 @@ public final class InsertDAO extends DAO{
     private void setEmpresa(Empresa empresa) throws SQLException{
         preparaSQL.setString(1,empresa.getFantasiaEmp());
         preparaSQL.setString(2,empresa.getInestEmp());
-        preparaSQL.setLong(3,empresa.getCnpj());
+        preparaSQL.setString(3,empresa.getCnpj());
         preparaSQL.setString(4,empresa.getEndEmp());
         preparaSQL.setString(5,empresa.getNumEmpresa());
         preparaSQL.setString(6,empresa.getComplEmp());
@@ -238,16 +237,16 @@ public final class InsertDAO extends DAO{
     
     private void setFuncionario(Funcionario funcionario) throws SQLException{
         preparaSQL.setString(1, funcionario.getNmFunc());
-        preparaSQL.setLong(2, funcionario.getCpfFunc());
-        preparaSQL.setLong(3, funcionario.getTelFunc());
+        preparaSQL.setString(2, funcionario.getCpfFunc());
+        preparaSQL.setString(3, funcionario.getTelFunc());
         preparaSQL.setString(4, funcionario.getEmailFunc());
         preparaSQL.setInt(5, funcionario.getIdsexoFunc());
         preparaSQL.setString(6, funcionario.getObsFunc());
-        preparaSQL.setLong(7, funcionario.getCnpjEmp().getCnpj());
+        preparaSQL.setString(7, funcionario.getCnpjEmp().getCnpj());
     }
     
     private void setPassagem(Passagem passagem) throws SQLException{
-        preparaSQL.setLong(1, passagem.getCpfPassageiro().getCpfCli());
+        preparaSQL.setString(1, passagem.getCpfPassageiro().getCpfCli());
         preparaSQL.setInt(2, passagem.getPassBagagem());
         preparaSQL.setString(3, passagem.getPassLocalizador());
     }
@@ -265,7 +264,7 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(3, voo.getDestino());
         preparaSQL.setDate(4, (Date) voo.getDtPartida());
         preparaSQL.setTime(5, (Time) voo.getHrPartida());
-        preparaSQL.setLong(6, voo.getCpnjEmp().getCnpj());
+        preparaSQL.setString(6, voo.getCpnjEmp().getCnpj());
         preparaSQL.setLong(7, voo.getVlVoo());
     }
     
@@ -337,6 +336,20 @@ public final class InsertDAO extends DAO{
             closeAll();
         }
     }
+    
+    void gravaEmpresa(Empresa empresa) throws SQLException{
+         try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertEmpresa());
+            setEmpresa(empresa);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
 
     @Override
     public void insertDataDB(Object obj) {
@@ -352,6 +365,11 @@ public final class InsertDAO extends DAO{
             }
             case "DAO.ClassesDB.Funcionario":{
                 System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    gravaFuncionario((Funcionario) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             }
             case "DAO.ClassesDB.Voo":{
@@ -368,6 +386,11 @@ public final class InsertDAO extends DAO{
             }
             case "DAO.ClassesDB.Empresa":{
                 System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    gravaEmpresa((Empresa) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             }
             case "DAO.ClassesDB.UsuarioCliente":{

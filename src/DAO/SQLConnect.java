@@ -17,7 +17,6 @@ import java.util.logging.Logger;
  */
 public class SQLConnect {
     private static Connection conexao;
-    private static final String driver = "com.mysql.cj.jdbc.Driver";
     private static StringBuilder result;
     private static final String bancoDeDados = "jdbc:mysql://localhost:3306/aviao";
     private static final String usuario = "root";
@@ -30,7 +29,6 @@ public class SQLConnect {
     public static synchronized Connection getInstance(){
         if(conexao == null){
             try {
-                Class.forName(driver);
                 result = new StringBuilder(bancoDeDados);
                 result.append("?useUnicode=true");
                 result.append("&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false");
@@ -40,8 +38,6 @@ public class SQLConnect {
                 System.out.println("Conexão criada com o banco de dados!");
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage() + "\nHouve um erro de conexão!");
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(SQLConnect.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return conexao;

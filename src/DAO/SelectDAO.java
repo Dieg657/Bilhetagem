@@ -180,7 +180,7 @@ public final class SelectDAO extends DAO{
         cliente.setOrgCli(rs.getString("org_cli"));
         uf.setIdEstado(rs.getInt("iduf_cli")); cliente.setIdufCli(uf);
         cliente.setDtnascCli(rs.getDate("dtnasc_cli"));
-        cliente.setCpfCli(rs.getLong("cpf_cli"));
+        cliente.setCpfCli(rs.getString("cpf_cli"));
         cliente.setEndCli(rs.getString("end_cli"));
         cliente.setNmCli(rs.getString("num_cli"));
         cliente.setComplCli(rs.getString("compl_cli"));
@@ -198,7 +198,7 @@ public final class SelectDAO extends DAO{
         estado = new Estado();
         empresa.setFantasiaEmp(rs.getString("fansisa_emp"));
         empresa.setInestEmp(rs.getString("inest_emp"));
-        empresa.setCnpj(rs.getLong("cnpj"));
+        empresa.setCnpj(rs.getString("cnpj"));
         empresa.setEndEmp(rs.getString("end_emp"));
         empresa.setNumEmpresa(rs.getString("num_emp"));
         empresa.setComplEmp(rs.getString("compl_emp"));
@@ -214,12 +214,12 @@ public final class SelectDAO extends DAO{
     private Funcionario getFuncionario (ResultSet rs) throws SQLException{
         funcionario = new Funcionario();
         funcionario.setNmFunc(rs.getString("nm_func"));
-        funcionario.setCpfFunc(rs.getLong("cpf_func"));
-        funcionario.setTelFunc(rs.getInt("tel_func"));
+        funcionario.setCpfFunc(rs.getString("cpf_func"));
+        funcionario.setTelFunc(rs.getString("tel_func"));
         funcionario.setIdsexoFunc(rs.getInt("idsexo_func"));
         funcionario.setObsFunc(rs.getString("obs_func"));
         empresa = new Empresa();
-        empresa.setCnpj(rs.getLong("cnpj_emp")); funcionario.setCnpjEmp(empresa);
+        empresa.setCnpj(rs.getString("cnpj_emp")); funcionario.setCnpjEmp(empresa);
         
         return funcionario;
     }
@@ -245,7 +245,7 @@ public final class SelectDAO extends DAO{
     private Passagem getPassagem (ResultSet rs) throws SQLException{
         passagem = new Passagem();
         cliente = new Cliente();
-        cliente.setCpfCli(rs.getLong("cpf_passageiro")); passagem.setCpfPassageiro(cliente);
+        cliente.setCpfCli(rs.getString("cpf_passageiro")); passagem.setCpfPassageiro(cliente);
         passagem.setPassBagagem(rs.getInt("pass_bagagem"));
         passagem.setPassLocalizador(rs.getString("pass_localizador"));
         
@@ -261,7 +261,7 @@ public final class SelectDAO extends DAO{
         voo.setDestino(rs.getString("destino"));  
         voo.setDtPartida(rs.getDate("dt_partida"));
         voo.setHrPartida(rs.getTime("hr_partida"));
-        empresa.setCnpj(rs.getLong("cnpj_emp")); voo.setCpnjEmp(empresa);
+        empresa.setCnpj(rs.getString("cnpj_emp")); voo.setCpnjEmp(empresa);
         voo.setVlVoo(rs.getLong("vl_voo"));
 
         return voo;

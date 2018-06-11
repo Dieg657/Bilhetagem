@@ -8,17 +8,14 @@ package Formulario;
 import DAO.ClassesDB.Estado;
 import DAO.ClassesDB.Status;
 import DAO.SelectDAO;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
  *
  * @author diego
  */
-public class FormUtils {
+public class FormUtils{
     private SelectDAO slctDAO;
    
     public void carregaComboBoxEstado(JComboBox cmb){
@@ -55,6 +52,26 @@ public class FormUtils {
             cmb.addItem(st);
         }        
     }
+    
+    public void carregaComboBoxSexo(JComboBox cmb){
+        cmb.removeAllItems();
+        ItemStatus st = null;
+        st = new ItemStatus(1, "Masculino");
+        cmb.addItem(st);
+        st = new ItemStatus(2, "Feminino");
+        cmb.addItem(st);
+    }
+    
+    public String getTextNumber(String text){
+        try {
+            Long.parseLong(text);
+            return text;
+        } catch (NumberFormatException|NullPointerException ex) {
+            System.out.println(ex.getMessage() + "\nInsira um número válido");
+        }
+        return null;
+    }
+   
     
     public FormUtils(){
         

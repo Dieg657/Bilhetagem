@@ -17,16 +17,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_passagem")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Passagem.findAll", query = "SELECT p FROM Passagem p")
     , @NamedQuery(name = "Passagem.findByPassBagagem", query = "SELECT p FROM Passagem p WHERE p.passBagagem = :passBagagem")
@@ -77,7 +74,6 @@ public class Passagem implements Serializable {
         this.cpfPassageiro = cpfPassageiro;
     }
 
-    @XmlTransient
     public Collection<VooPoltrona> getVooPoltronaCollection() {
         return vooPoltronaCollection;
     }

@@ -19,16 +19,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_empresa")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Empresa.findAll", query = "SELECT e FROM Empresa e")
     , @NamedQuery(name = "Empresa.findByFantasiaEmp", query = "SELECT e FROM Empresa e WHERE e.fantasiaEmp = :fantasiaEmp")
@@ -42,6 +39,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Empresa.findByEmailEmp", query = "SELECT e FROM Empresa e WHERE e.emailEmp = :emailEmp")})
 public class Empresa implements Serializable {
 
+    @Column(name = "bairro_emp")
+    private String bairroEmp;
+
     private static final long serialVersionUID = 1L;
     @Column(name = "fantasia_emp")
     private String fantasiaEmp;
@@ -50,7 +50,7 @@ public class Empresa implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "cnpj")
-    private Long cnpj;
+    private String cnpj;
     @Column(name = "end_emp")
     private String endEmp;
     @Column(name = "num_empresa")
@@ -77,7 +77,7 @@ public class Empresa implements Serializable {
     public Empresa() {
     }
 
-    public Empresa(Long cnpj) {
+    public Empresa(String cnpj) {
         this.cnpj = cnpj;
     }
 
@@ -97,11 +97,11 @@ public class Empresa implements Serializable {
         this.inestEmp = inestEmp;
     }
 
-    public Long getCnpj() {
+    public String getCnpj() {
         return cnpj;
     }
 
-    public void setCnpj(Long cnpj) {
+    public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
 
@@ -161,7 +161,6 @@ public class Empresa implements Serializable {
         this.obsEmp = obsEmp;
     }
 
-    @XmlTransient
     public Collection<Voo> getVooCollection() {
         return vooCollection;
     }
@@ -178,7 +177,6 @@ public class Empresa implements Serializable {
         this.idestEmp = idestEmp;
     }
 
-    @XmlTransient
     public Collection<Funcionario> getFuncionarioCollection() {
         return funcionarioCollection;
     }
@@ -210,6 +208,14 @@ public class Empresa implements Serializable {
     @Override
     public String toString() {
         return "DAO.ClassesDB.Empresa[ cnpj=" + cnpj + " ]";
+    }
+
+    public String getBairroEmp() {
+        return bairroEmp;
+    }
+
+    public void setBairroEmp(String bairroEmp) {
+        this.bairroEmp = bairroEmp;
     }
     
 }

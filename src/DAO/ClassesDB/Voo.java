@@ -21,16 +21,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_voo")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Voo.findAll", query = "SELECT v FROM Voo v")
     , @NamedQuery(name = "Voo.findByVooTag", query = "SELECT v FROM Voo v WHERE v.vooTag = :vooTag")
@@ -141,7 +138,6 @@ public class Voo implements Serializable {
         this.cpnjEmp = cpnjEmp;
     }
 
-    @XmlTransient
     public Collection<VooPoltrona> getVooPoltronaCollection() {
         return vooPoltronaCollection;
     }

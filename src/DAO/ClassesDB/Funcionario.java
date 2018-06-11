@@ -18,15 +18,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_funcionario")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Funcionario.findAll", query = "SELECT f FROM Funcionario f")
     , @NamedQuery(name = "Funcionario.findByNmFunc", query = "SELECT f FROM Funcionario f WHERE f.nmFunc = :nmFunc")
@@ -42,9 +40,9 @@ public class Funcionario implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "cpf_func")
-    private Long cpfFunc;
+    private String cpfFunc;
     @Column(name = "tel_func")
-    private Integer telFunc;
+    private String telFunc;
     @Column(name = "email_func")
     private String emailFunc;
     @Column(name = "idsexo_func")
@@ -61,7 +59,7 @@ public class Funcionario implements Serializable {
     public Funcionario() {
     }
 
-    public Funcionario(Long cpfFunc) {
+    public Funcionario(String cpfFunc) {
         this.cpfFunc = cpfFunc;
     }
 
@@ -73,19 +71,19 @@ public class Funcionario implements Serializable {
         this.nmFunc = nmFunc;
     }
 
-    public Long getCpfFunc() {
+    public String getCpfFunc() {
         return cpfFunc;
     }
 
-    public void setCpfFunc(Long cpfFunc) {
+    public void setCpfFunc(String cpfFunc) {
         this.cpfFunc = cpfFunc;
     }
 
-    public Integer getTelFunc() {
+    public String getTelFunc() {
         return telFunc;
     }
 
-    public void setTelFunc(Integer telFunc) {
+    public void setTelFunc(String telFunc) {
         this.telFunc = telFunc;
     }
 

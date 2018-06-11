@@ -15,15 +15,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author diego.soares
+ * @author diego
  */
 @Entity
 @Table(name = "tb_usuario_cli")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "UsuarioCliente.findAll", query = "SELECT u FROM UsuarioCliente u")
     , @NamedQuery(name = "UsuarioCliente.findByCpfCli", query = "SELECT u FROM UsuarioCliente u WHERE u.cpfCli = :cpfCli")
@@ -35,7 +33,7 @@ public class UsuarioCliente implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "cpf_cli")
-    private Long cpfCli;
+    private String cpfCli;
     @Basic(optional = false)
     @Column(name = "usuario")
     private String usuario;
@@ -49,21 +47,21 @@ public class UsuarioCliente implements Serializable {
     public UsuarioCliente() {
     }
 
-    public UsuarioCliente(Long cpfCli) {
+    public UsuarioCliente(String cpfCli) {
         this.cpfCli = cpfCli;
     }
 
-    public UsuarioCliente(Long cpfCli, String usuario, String senha) {
+    public UsuarioCliente(String cpfCli, String usuario, String senha) {
         this.cpfCli = cpfCli;
         this.usuario = usuario;
         this.senha = senha;
     }
 
-    public Long getCpfCli() {
+    public String getCpfCli() {
         return cpfCli;
     }
 
-    public void setCpfCli(Long cpfCli) {
+    public void setCpfCli(String cpfCli) {
         this.cpfCli = cpfCli;
     }
 
