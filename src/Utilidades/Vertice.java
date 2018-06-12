@@ -33,6 +33,10 @@ public class Vertice {
         return aresta;
     }
     
+    public String getCidade(){
+        return this.cidade;
+    }
+    
     public void imprimirCidade(){
         System.out.println("Cidade: " + cidade);
     }

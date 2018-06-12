@@ -8,6 +8,7 @@ package Utilidades;
 import DAO.ClassesDB.Estado;
 import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
+import DAO.ClassesDB.VooPoltrona;
 import DAO.SelectDAO;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -20,8 +21,8 @@ import org.jdesktop.swingx.JXDatePicker;
  */
 public class FormUtils{
     private SelectDAO slctDAO;
-    private Voo voo;
     private VooTableModel model;
+    private Voo voo;
    
     public void carregaComboBoxEstado(JComboBox cmb){
         slctDAO = new SelectDAO();
@@ -60,10 +61,10 @@ public class FormUtils{
     
     public void carregaComboBoxSexo(JComboBox cmb){
         cmb.removeAllItems();
-        ItemStatus st = null;
-        st = new ItemStatus(1, "Masculino");
+        Item st = null;
+        st = new Item(1, "Masculino");
         cmb.addItem(st);
-        st = new ItemStatus(2, "Feminino");
+        st = new Item(2, "Feminino");
         cmb.addItem(st);
     }
     
@@ -90,6 +91,17 @@ public class FormUtils{
         tbl.setModel(model);     
     }
     
+    public void carregaComboBoxPoltrona(JComboBox cmb, Voo voo){
+        cmb.removeAllItems();
+        List<VooPoltrona> lstPoltrona;
+        slctDAO = new SelectDAO();
+        VooPoltrona poltrona = new VooPoltrona();
+        poltrona.setVooTag(voo);
+        lstPoltrona = slctDAO.getVooPoltronaParametros(poltrona);
+        for (VooPoltrona item : lstPoltrona) {
+            cmb.addItem(new Item(item.getIdtbVooPoltrona(), Integer.toString(item.getPoltrona())));
+        }
+    }
     public FormUtils(){
         
     }
@@ -134,6 +146,22 @@ public class FormUtils{
         public int ID;
         public String descricao;
         
+        @Override
+        public String toString(){
+           return this.descricao; 
+        }
+    }
+    
+    public class Item{
+        
+         public Item (int id, String desc){
+            this.ID = id;
+            this.descricao = desc;
+        }
+        
+        public int ID;
+        public String descricao;
+               
         @Override
         public String toString(){
            return this.descricao; 

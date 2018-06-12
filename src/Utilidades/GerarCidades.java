@@ -209,7 +209,7 @@ public class GerarCidades {
         }
     }
     
-    public ArrayList<Vertice> getCidadesConectadas(){
+    public static ArrayList<Vertice> getCidadesConectadas(){
         return listaCidades;
     }
     

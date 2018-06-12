@@ -113,16 +113,16 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `aviao`.`tb_voo` (
   `voo_tag` VARCHAR(45) NOT NULL,
-  `origem` VARCHAR(45) NOT NULL,
-  `destino` VARCHAR(45) NOT NULL,
+  `origem` VARCHAR(20) NOT NULL,
+  `destino` VARCHAR(20) NOT NULL,
   `dt_partida` DATE NOT NULL,
   `hr_partida` TIME(0) NOT NULL,
-  `cpnj_emp` VARCHAR(20) NOT NULL,
+  `cnpj_emp` VARCHAR(20) NOT NULL,
   `vl_voo` DECIMAL NOT NULL,
   PRIMARY KEY (`voo_tag`),
-  INDEX `fk_tb_voo_tb_empresa1_idx` (`cpnj_emp` ASC),
+  INDEX `fk_tb_voo_tb_empresa1_idx` (`cnpj_emp` ASC),
   CONSTRAINT `fk_tb_voo_tb_empresa1`
-    FOREIGN KEY (`cpnj_emp`)
+    FOREIGN KEY (`cnpj_emp`)
     REFERENCES `aviao`.`tb_empresa` (`cnpj`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -233,38 +233,35 @@ USE `aviao`;
 
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (1, 'Livre');
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (2, 'Ocupada');
-INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (3, 'Manuten√ß√£o');
+INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (3, 'ManutenÁ„o');
 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Acre','AC');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Alagoas','AL'); 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amap√°','AP');
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amap·','AP');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amazonas','AM');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Bahia','BA');
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Cear√°','CE'); 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Cear·','CE'); 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Distrito Federal','DF');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Esp√≠rito Santo','ES');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Goi√°s','GO');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Maranh√£o','MA');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('EspÌrito Santo','ES');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Goi·s','GO');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Maranh„o','MA');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Mato Grosso','MT');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Mato Grosso do Sul','MS');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Minas Gerais','MG');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Par√°','PA');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Para√≠ba','PB');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Paran√°','PR');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Par·','PA');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('ParaÌba','PB');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Paran·','PR');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Pernambuco','PE');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Piau√≠','PI');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('PiauÌ','PI');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio de Janeiro','RJ');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio Grande do Norte','RN');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio Grande do Sul','RS');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rond√¥nia','RO');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('RondÙnia','RO');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Roraima','RR');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Santa Catarina','SC');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('S√£o Paulo','SP');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('S„o Paulo','SP');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Sergipe','SE');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Tocantins', 'TO');
 
 
 COMMIT;
-
-
-

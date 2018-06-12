@@ -5,11 +5,24 @@
  */
 package DAO;
 
+import DAO.ClassesDB.Cliente;
+import DAO.ClassesDB.Empresa;
+import DAO.ClassesDB.Funcionario;
+import DAO.ClassesDB.Status;
+import DAO.ClassesDB.Voo;
+import DAO.ClassesDB.VooPoltrona;
+import static DAO.DAO.preparaSQL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author diego
  */
 public final class UpdateDAO extends DAO {
+    private static boolean bloquearNovosVoos = false;
     
     public UpdateDAO(){
         
@@ -24,7 +37,6 @@ public final class UpdateDAO extends DAO {
             "`org_cli` = ? ,\n" +
             "`iduf_cli` = ? ,\n" +
             "`dtnasc_cli` = ? ,\n" +
-            "`cpf_cli` = ? ,\n" +
             "`end_cli` = ? ,\n" +
             "`num_cli` = ? ,\n" +
             "`compl_cli` = ? ,\n" +
@@ -35,31 +47,16 @@ public final class UpdateDAO extends DAO {
             "`obs_cli` = ? \n" +
             "WHERE `cpf_cli` = ? ";
       
-      private static final String updateClienteLogin = "UPDATE `aviao`.`tb_usuario_cli`\n" +
-            "SET\n" +
-            "`cpf_cli` = ? ,\n" +
-            "`usuario` = ? ,\n" +
-            "`senha` = ? \n" +
-            "WHERE `cpf_cli` = ? ";
-      
       private static final String updateFuncionario = "UPDATE `aviao`.`tb_funcionario`\n" +
             "SET\n" +
             "`nm_func` = ?,\n" +
-            "`cpf_func` = ? ,\n" +
-            "`idtel_func` = ? ,\n" +
+            "`tel_func` = ? ,\n" +
             "`email_func` = ? ,\n" +
             "`idsexo_func` = ? ,\n" +
             "`obs_func` = ? ,\n" +
             "`cnpj_emp` = ? \n" +
             "WHERE `cpf_func` = ? ";
       
-    private static final String updateFuncionarioLogin = "UPDATE `aviao`.`tb_usuario_func`\n" +
-            "SET\n" +
-            "`cpf_func` = ? ,\n" +
-            "`usuario` = ? ,\n" +
-            "`senha` = ? \n" +
-            "WHERE `cpf_func` = ?";    
-    
     private static final String updateEmpresa = "UPDATE `aviao`.`tb_empresa`\n" +
             "SET\n" +
             "`fantasia_emp` = ? ,\n" +
@@ -74,89 +71,185 @@ public final class UpdateDAO extends DAO {
             "`email_emp` = ? ,\n" +
             "`obs_emp` = ? \n" +
             "WHERE `cnpj` = ? ";
+       
+    private static final String updateClienteVooPoltrona = "call updateCliPoltrona(?,?,?)";
+    private static final String updateStatusPoltronaManutencao = "call updateStatusPoltronaManutencao(?,?,?)";
+    private static final String updateStatusPoltronaLivre = "call updateStatusPoltronaLivre(?,?,?)";
     
-    private static final String updateVoo = "UPDATE `aviao`.`tb_voo`\n" +
-            "SET\n" +
-            "`voo_tag` = ? ,\n" +
-            "`origem` = ? ,\n" +
-            "`destino` = ? ,\n" +
-            "`dt_partida` = ? ,\n" +
-            "`hr_partida` = ? ,\n" +
-            "`cpnj_emp` = ? ,\n" +
-            "`vl_voo` = ? \n" +
-            "WHERE `voo_tag` = ? ";
+    private static final String selectPoltronaLivre = "SELECT `tb_voo_poltrona`.`poltrona` FROM `aviao`.`tb_voo_poltrona`\n" +
+            "WHERE `tb_voo_poltrona`.`voo_tag` = ? AND `tb_voo_poltrona`.`status` = 1";
     
-    private static final String updateVooPoltrona = "UPDATE `aviao`.`tb_voo_poltrona`\n" +
-            "SET\n" +
-            "`voo_tag` = ? ,\n" +
-            "`poltrona` =  ? ,\n" +
-            "`localizador` = ? ,\n" +
-            "`status` = ? \n" +
-            "WHERE `poltrona` = ? AND `voo_tag` = ? ";
-    
-    private static final String updatePassagem = "UPDATE `aviao`.`tb_passagem`\n" +
-            "SET\n" +
-            "`cpf_passageiro` = ? ,\n" +
-            "`pass_bagagem` = ? ,\n" +
-            "`pass_localizador` = ? \n" +
-            "WHERE `pass_localizador` = ? ";
-
     /**
      * @return the updateCliente
      */
     private String getUpdateCliente() {
         return updateCliente;
     }
-
     /**
      * @return the updateClienteLogin
      */
     private String getUpdateClienteLogin() {
         return updateClienteLogin;
     }
-
     /**
      * @return the updateFuncionario
      */
     private String getUpdateFuncionario() {
         return updateFuncionario;
     }
-
-    /**
-     * @return the updateFuncionarioLogin
-     */
-    private String getUpdateFuncionarioLogin() {
-        return updateFuncionarioLogin;
-    }
-
     /**
      * @return the updateEmpresa
      */
     private String getUpdateEmpresa() {
         return updateEmpresa;
     }
-
-    /**
-     * @return the updateVoo
-     */
-    private String getUpdateVoo() {
-        return updateVoo;
+     
+    private static void setCliente(Cliente cliente) throws SQLException{
+        preparaSQL.setString(1, cliente.getNmCli());
+        preparaSQL.setString(2, cliente.getDocCli());
+        preparaSQL.setString(3, cliente.getOrgCli());
+        preparaSQL.setInt(4, cliente.getIdufCli().getIdEstado());
+        preparaSQL.setDate(5, new java.sql.Date(cliente.getDtnascCli().getTime()));
+        preparaSQL.setString(6, cliente.getEndCli());
+        preparaSQL.setString(7, cliente.getNumCli());
+        preparaSQL.setString(8, cliente.getComplCli());
+        preparaSQL.setString(9, cliente.getBairroCli());
+        preparaSQL.setString(10, cliente.getCidadeCli());
+        preparaSQL.setInt(11, cliente.getIdestCli().getIdEstado());
+        preparaSQL.setString(12, cliente.getEmailCli());
+        preparaSQL.setString(13, cliente.getObsCli());
+        preparaSQL.setString(14, cliente.getCpfCli());
     }
-
-    /**
-     * @return the updateVooPoltrona
-     */
-    private String getUpdateVooPoltrona() {
-        return updateVooPoltrona;
+    private static void setFuncionario(Funcionario funcionario) throws SQLException{
+        preparaSQL.setString(1, funcionario.getNmFunc());
+        preparaSQL.setString(2, funcionario.getCpfFunc());
+        preparaSQL.setString(3, funcionario.getTelFunc());
+        preparaSQL.setString(4, funcionario.getEmailFunc());
+        preparaSQL.setInt(5, funcionario.getIdsexoFunc());
+        preparaSQL.setString(6, funcionario.getObsFunc());
+        preparaSQL.setString(7, funcionario.getCnpjEmp().getCnpj());
     }
-
-    /**
-     * @return the updatePassagem
-     */
-    private String getUpdatePassagem() {
-        return updatePassagem;
+    private static void setVooTag(String vooTag) throws SQLException{
+        preparaSQL.setString(1, vooTag);
     }
-
+    private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
+        preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
+        preparaSQL.setInt(2, poltrona.getPoltrona());
+        preparaSQL.setString(3, poltrona.getLocalizador().getPassLocalizador());
+    }
+    private static void setEmpresa(Empresa empresa) throws SQLException{
+        preparaSQL.setString(1,empresa.getFantasiaEmp());
+        preparaSQL.setString(2,empresa.getInestEmp());
+        preparaSQL.setString(3,empresa.getCnpj());
+        preparaSQL.setString(4,empresa.getEndEmp());
+        preparaSQL.setString(5,empresa.getNumEmpresa());
+        preparaSQL.setString(6,empresa.getComplEmp());
+        preparaSQL.setString(7,empresa.getCidadeEmp());
+        preparaSQL.setInt(8,empresa.getIdestEmp().getIdEstado());
+        preparaSQL.setInt(9,empresa.getCepEmp());
+        preparaSQL.setString(10,empresa.getEmailEmp());
+        preparaSQL.setString(11,empresa.getObsEmp());
+    }
+    private VooPoltrona getPoltronaLivre(ResultSet rs) throws SQLException{
+        VooPoltrona obj = new VooPoltrona();
+        obj.setPoltrona(rs.getInt("poltrona"));
+        return obj;
+    }    
+    VooPoltrona moveParaAProximaPoltrona(VooPoltrona poltrona) throws SQLException{
+        try {
+            VooPoltrona novaPoltrona = new VooPoltrona();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(selectPoltronaLivre);
+            setVooTag(poltrona.getVooTag().getVooTag());
+            resultadoSQL = preparaSQL.executeQuery();
+            if(resultadoSQL.getRow() > 0){
+                poltrona = getPoltronaLivre(resultadoSQL);
+                novaPoltrona.setVooTag(poltrona.getVooTag());
+                novaPoltrona.setPoltrona(poltrona.getPoltrona());
+                novaPoltrona.setLocalizador(poltrona.getLocalizador());
+                novaPoltrona.setStatus(new Status(2));
+                return novaPoltrona;
+            }else{
+                throw new SQLException("Não há poltronas livres neste voo!");
+            }
+        } catch (SQLException ex) {
+                System.out.println(ex.getMessage() + "\nNão foi possivel consultar no banco de dados");
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    void atualizaCliente(Cliente cliente) throws SQLException{
+        try {
+            preparaSQL = SQLConnect.getInstance().prepareStatement(updateCliente);
+            setCliente(cliente);
+            int executeUpdate = preparaSQL.executeUpdate();
+            if(executeUpdate == 1)
+                System.out.println("Atualizou no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+    void atualizaFuncionario(Funcionario funcionario) throws SQLException{
+        
+    }
+    void atualizaEmpresa(Empresa empresa) throws SQLException{
+        
+    }
+    void atualizaClienteVooPoltrona(VooPoltrona poltrona) throws SQLException{
+        /*
+            Necessita do Localizador para colocar o cliente numa outra poltrona
+        */
+    }
+    void atualizaStatusVooPoltrona(VooPoltrona poltrona, int op) throws SQLException{
+        /*
+            Definindo a poltrona como Livre ou em Manutençao
+        */
+        if(op == 1){
+            try {
+                preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaLivre);
+                setVooPoltrona(poltrona);
+                int executeUpdate = preparaSQL.executeUpdate();
+                if(executeUpdate == 1)
+                    System.out.println("Atualizou no banco de dados!");
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+            }finally{
+                closeAll();
+            }
+        }else{
+            VooPoltrona nvPoltrona = new VooPoltrona();
+            
+            try {
+                nvPoltrona = moveParaAProximaPoltrona(poltrona);
+                
+                preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaManutencao);
+                setVooPoltrona(poltrona);
+                int executeUpdate = preparaSQL.executeUpdate();
+                if(executeUpdate == 1)
+                    System.out.println("Atualizou poltrona para Livre no banco de dados!");
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+            }finally{
+                closeAll();
+            }
+            
+            try {
+                preparaSQL = SQLConnect.getInstance().prepareStatement(updateClienteVooPoltrona);
+                setVooPoltrona(nvPoltrona);
+                int executeUpdate = preparaSQL.executeUpdate();
+                if(executeUpdate == 1)
+                    System.out.println("Atualizou a poltrona para Ocupada no banco de dados!");
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+            }finally{
+                closeAll();
+            }
+        }
+    }
+    
+    
     @Override
     public void insertDataDB(Object obj) {
         throw new UnsupportedOperationException("Não é possível inserir numa consulta de atualização"); //To change body of generated methods, choose Tools | Templates.
@@ -164,7 +257,88 @@ public final class UpdateDAO extends DAO {
 
     @Override
     public void updateDataDB(Object obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        switch(obj.getClass().getName()){
+            case "DAO.ClassesDB.Cliente":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    atualizaCliente((Cliente) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "DAO.ClassesDB.Funcionario":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    atualizaFuncionario((Funcionario) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "DAO.ClassesDB.Voo":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.VooPoltrona":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                VooPoltrona poltrona = (VooPoltrona) obj;
+                switch(poltrona.getStatus().getIdStatus()){
+                    case 1:{
+                        /*
+                            Libera a poltrona para um nova passagem
+                        */
+                        try {
+                            atualizaStatusVooPoltrona(poltrona,1);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                    }
+                    case 2:{
+                        //Não faz nada
+                        break;
+                    }
+                    case 3:{
+                        /*
+                            Move para a proxima poltrona livre, se não houver exibe mensagem de erro!
+                        */
+                        try {
+                            atualizaStatusVooPoltrona(poltrona,2);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+             case "DAO.ClassesDB.Passagem":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.Empresa":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    atualizaEmpresa((Empresa) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "DAO.ClassesDB.UsuarioCliente":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            case "DAO.ClassesDB.UsuarioFuncionario":{
+                System.out.println("É a classe: " + obj.getClass().getName());
+                break;
+            }
+            default:{
+                System.out.println("Classe nula: " + obj.getClass().getName());
+                break;
+            }
+        }
     }
 
     @Override

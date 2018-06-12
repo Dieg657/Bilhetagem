@@ -85,32 +85,19 @@ public final class InsertDAO extends DAO{
             " ? )";
     
     //Voo
-    private static final String insertVoo = "INSERT INTO `aviao`.`tb_voo`\n" +
-            "(`voo_tag`,\n" +
-            "`origem`,\n" +
-            "`destino`,\n" +
-            "`dt_partida`,\n" +
-            "`hr_partida`,\n" +
-            "`cpnj_emp`,\n" +
-            "`vl_voo`)\n" +
-            "VALUES\n" +
-            "( ? ,\n" +
-            " ? ,\n" +
-            " ? ,\n" +
-            " ? ,\n" +
-            " ? ,\n" +
-            " ? ,\n" +
-            " ? )";
-    private static final String insertVooPoltrona = "INSERT INTO `aviao`.`tb_voo_poltrona`\n" +
-            "(`voo_tag`,\n" +
-            "`poltrona`,\n" +
-            "`localizador`,\n" +
-            "`status`)\n" +
-            "VALUES\n" +
-            "( ? ,\n" +
-            " ? ,\n" +
-            " ? ,\n" +
-            " ? )";
+    /*
+        Campos obrigatórios: `voo_tag`,`origem`, `destino`, `dt_partida`, `hr_partida`,`cnpj_emp`, `vl_voo`
+    */
+    private static final String insertVoo = "call criaVoo(?, ?, ?, ?, ?, ?, ?)";
+    
+    /*
+        Campos obrigatórios: `voo_tag`, quantidade de poltronas da aeronave
+    */
+    private static final String insertVooPoltrona = "call criaVooPoltrona( ? , ?)";
+    /*
+        Campos obrigatórios: voo_tag, poltrona, localizador
+    */
+    
     
     //Passagem
     private static final String insertPassagem = "INSERT INTO `aviao`.`tb_passagem`\n" +
@@ -254,8 +241,6 @@ public final class InsertDAO extends DAO{
     private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
         preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
         preparaSQL.setInt(2, poltrona.getPoltrona());
-        preparaSQL.setString(3, poltrona.getLocalizador().getPassLocalizador());
-        preparaSQL.setString(4, poltrona.getStatus().getStatus());
     }
     
     private static void setVoo(Voo voo) throws SQLException{
@@ -323,6 +308,7 @@ public final class InsertDAO extends DAO{
             closeAll();
         }
     }
+    
     void gravaPassagem(Passagem passagem) throws SQLException{
          try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertPassagem());

@@ -14,11 +14,9 @@ import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
 import static DAO.DAO.preparaSQL;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,7 +56,7 @@ public final class SelectDAO extends DAO{
     
     private static final String selectFuncionario = "SELECT `tb_funcionario`.`nm_func`,\n" +
         "    `tb_funcionario`.`cpf_func`,\n" +
-        "    `tb_funcionario`.`idtel_func`,\n" +
+        "    `tb_funcionario`.`tel_func`,\n" +
         "    `tb_funcionario`.`email_func`,\n" +
         "    `tb_funcionario`.`idsexo_func`,\n" +
         "    `tb_funcionario`.`obs_func`,\n" +
@@ -76,10 +74,10 @@ public final class SelectDAO extends DAO{
         "    `tb_voo`.`destino`,\n" +
         "    `tb_voo`.`dt_partida`,\n" +
         "    `tb_voo`.`hr_partida`,\n" +
-        "    `tb_voo`.`cpnj_emp`,\n" +
+        "    `tb_voo`.`cnpj_emp`,\n" +
         "    `tb_voo`.`vl_voo`\n" +
-        "FROM `aviao`.`tb_voo`\n" +
-        "WHERE (`tb_voo`.`origem` = ? AND `tb_voo`.`destino`= ? ) OR `tb_voo`.`dt_partida` = ? ";
+        "FROM `aviao`.`tb_voo` ";
+        
     
     private static final String selectVooPoltrona = "SELECT `tb_voo_poltrona`.`idtb_voo_poltrona`,\n" +
         "    `tb_voo_poltrona`.`voo_tag`,\n" +
@@ -119,19 +117,42 @@ public final class SelectDAO extends DAO{
         preparaSQL.setString(2, voo.getDestino());
         preparaSQL.setDate(3, new java.sql.Date(voo.getDtPartida().getTime()));
     }
+    
+    private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
+        preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Consultas com Parametros"> 
     public List<Voo> getVooComParametros(Voo voo){
         try {
             List<Voo> lstVoo = new ArrayList<>();
-            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVoo());
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVoo() + "WHERE (`tb_voo`.`origem` = ? AND `tb_voo`.`destino`= ? ) \n"+
+                    "OR `tb_voo`.`dt_partida` = ? ");
             setVoo(voo);
             resultadoSQL = preparaSQL.executeQuery();
             while (resultadoSQL.next()) {
                 lstVoo.add(getVoo(resultadoSQL));
             }
             return lstVoo;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    
+    public List<VooPoltrona> getVooPoltronaParametros(VooPoltrona poltrona){
+        try {
+            List<VooPoltrona> lstPoltrona = new ArrayList<>();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVooPoltrona()+ "WHERE `tb_voo_poltrona`.`voo_tag` = ? ");
+            setVooPoltrona(poltrona);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                lstPoltrona.add(getVooPoltrona(resultadoSQL));
+            }
+            return lstPoltrona;
         } catch (SQLException ex) {
             Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
         }finally{
@@ -348,7 +369,7 @@ public final class SelectDAO extends DAO{
     public List<Status> getStatusAll(){
         try {
             List<Status> lstStatus = new ArrayList<>();
-            preparaSQL = (PreparedStatement) SQLConnect.getInstance().prepareStatement(getSelectStatus());
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectStatus());
             resultadoSQL = preparaSQL.executeQuery();
             while (resultadoSQL.next()) {
                 lstStatus.add(getStatus(resultadoSQL));
