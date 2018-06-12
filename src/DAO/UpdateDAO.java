@@ -172,12 +172,8 @@ public final class UpdateDAO extends DAO {
         return this.operacao;
     }
     
-
     @Override
     public void setOperacao(String operacao) {
         this.operacao = operacao;
     }
-    
-   
-    
 }

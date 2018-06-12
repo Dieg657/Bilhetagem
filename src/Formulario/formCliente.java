@@ -5,6 +5,7 @@
  */
 package Formulario;
 
+import Utilidades.FormUtils;
 import DAO.ClassesDB.Cliente;
 import DAO.ClassesDB.Estado;
 import Utilidades.Facade;

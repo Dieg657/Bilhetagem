@@ -12,10 +12,10 @@ import java.util.Random;
  *
  * @author puc
  */
-public final class GerarCidades {
-    int ID = 0;
-    private final String[] cidades = new String[27];
-    private ArrayList<Vertice> listaCidades = new ArrayList<>();
+public class GerarCidades {
+    public static int ID = 0;
+    public static String[] cidades = new String[27];
+    public static ArrayList<Vertice> listaCidades = new ArrayList<>();
     
     public GerarCidades(){        
         criarMapa();
@@ -213,7 +213,7 @@ public final class GerarCidades {
         return listaCidades;
     }
     
-    public ArrayList<Vertice> caminhoMinimo(Vertice origem, Vertice destino){
+    public static ArrayList<Vertice> caminhoMinimo(Vertice origem, Vertice destino){
         
         /* Inicia os vetores de assistencia */
         int[] dist = new int[27];
@@ -268,6 +268,7 @@ public final class GerarCidades {
        
         return resultado;
     }
+    
     public boolean verificaSeConectado(Vertice origem, Vertice destino){
         for (Aresta next : origem.getConexaoDaCidade()) {
             if(next.getDestino().equals(destino))

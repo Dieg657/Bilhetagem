@@ -13,9 +13,12 @@ import DAO.ClassesDB.Passagem;
 import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
+import static DAO.DAO.preparaSQL;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,7 +29,8 @@ import java.util.logging.Logger;
  * @author diego
  */
 public final class SelectDAO extends DAO{
-    
+    private String operacao = null;
+
     public SelectDAO(){
         
     }
@@ -60,16 +64,22 @@ public final class SelectDAO extends DAO{
         "    `tb_funcionario`.`obs_func`,\n" +
         "    `tb_funcionario`.`cnpj_emp`\n" +
         "FROM `aviao`.`tb_funcionario`";
+    
     private static final String selectFuncionarioLogin = "SELECT `tb_usuario_func`.`cpf_func`,\n" +
         "    `tb_usuario_func`.`usuario`,\n" +
         "    `tb_usuario_func`.`senha`\n" +
         "FROM `aviao`.`tb_usuario_func`";
     
     //Voo
-    private static final String selectVoo = "SELECT `tb_usuario_func`.`cpf_func`,\n" +
-        "    `tb_usuario_func`.`usuario`,\n" +
-        "    `tb_usuario_func`.`senha`\n" +
-        "FROM `aviao`.`tb_usuario_func`";
+    private static final String selectVoo = "SELECT `tb_voo`.`voo_tag`,\n" +
+        "    `tb_voo`.`origem`,\n" +
+        "    `tb_voo`.`destino`,\n" +
+        "    `tb_voo`.`dt_partida`,\n" +
+        "    `tb_voo`.`hr_partida`,\n" +
+        "    `tb_voo`.`cpnj_emp`,\n" +
+        "    `tb_voo`.`vl_voo`\n" +
+        "FROM `aviao`.`tb_voo`\n" +
+        "WHERE (`tb_voo`.`origem` = ? AND `tb_voo`.`destino`= ? ) OR `tb_voo`.`dt_partida` = ? ";
     
     private static final String selectVooPoltrona = "SELECT `tb_voo_poltrona`.`idtb_voo_poltrona`,\n" +
         "    `tb_voo_poltrona`.`voo_tag`,\n" +
@@ -100,7 +110,41 @@ public final class SelectDAO extends DAO{
         "    `tb_empresa`.`email_emp`,\n" +
         "    `tb_empresa`.`obs_emp`\n" +
         "FROM `aviao`.`tb_empresa`";
-
+    
+    
+    
+    // <editor-fold defaultstate="collapsed" desc="Prepara parametros"> 
+    private static void setVoo(Voo voo) throws SQLException{
+        preparaSQL.setString(1, voo.getOrigem());
+        preparaSQL.setString(2, voo.getDestino());
+        preparaSQL.setDate(3, new java.sql.Date(voo.getDtPartida().getTime()));
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Consultas com Parametros"> 
+    public List<Voo> getVooComParametros(Voo voo){
+        try {
+            List<Voo> lstVoo = new ArrayList<>();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVoo());
+            setVoo(voo);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                lstVoo.add(getVoo(resultadoSQL));
+            }
+            return lstVoo;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Consultas sem Parametros"> 
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Getters"> 
     /**
      * @return the selectStatus
      */
@@ -170,7 +214,9 @@ public final class SelectDAO extends DAO{
     public static String getSelectEmpresa() {
         return selectEmpresa;
     }
+    // </editor-fold>
     
+    // <editor-fold defaultstate="collapsed" desc="ResultSet">       
     private Cliente getCliente(ResultSet rs) throws SQLException{
         cliente = new Cliente();
         uf = new Estado();
@@ -254,14 +300,13 @@ public final class SelectDAO extends DAO{
     
     private Voo getVoo (ResultSet rs) throws SQLException{
         voo = new Voo();
-        empresa = new Empresa();
         
         voo.setVooTag(rs.getString("voo_tag"));
         voo.setOrigem(rs.getString("origem"));
         voo.setDestino(rs.getString("destino"));  
         voo.setDtPartida(rs.getDate("dt_partida"));
         voo.setHrPartida(rs.getTime("hr_partida"));
-        empresa.setCnpj(rs.getString("cnpj_emp")); voo.setCpnjEmp(empresa);
+        voo.setCpnjEmp(new Empresa(rs.getString("cpnj_emp")));
         voo.setVlVoo(rs.getLong("vl_voo"));
 
         return voo;
@@ -280,7 +325,9 @@ public final class SelectDAO extends DAO{
         
         return poltrona;
     }
+    // </editor-fold>
     
+    // <editor-fold defaultstate="collapsed" desc="Dados para cmbEstado e cmbUF"> 
     public List<Estado> getEstadoAll(){
         try {
             List<Estado> lstEstado = new ArrayList<>();
@@ -298,7 +345,7 @@ public final class SelectDAO extends DAO{
         return null;
     }
     
-     public List<Status> getStatusAll(){
+    public List<Status> getStatusAll(){
         try {
             List<Status> lstStatus = new ArrayList<>();
             preparaSQL = (PreparedStatement) SQLConnect.getInstance().prepareStatement(getSelectStatus());
@@ -314,24 +361,27 @@ public final class SelectDAO extends DAO{
         }
         return null;
     }
-
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Funções herdadas"> 
     @Override
     public void insertDataDB(Object obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     }
 
     @Override
     public void updateDataDB(Object obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     }
+    // </editor-fold>
+    
     @Override
     public String getOperacao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+         return this.operacao;
+     }
+    
     @Override
     public void setOperacao(String operacao) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+         this.operacao = operacao;
+     }
 }

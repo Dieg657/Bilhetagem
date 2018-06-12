@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Formulario;
+package Utilidades;
 
 import DAO.ClassesDB.Estado;
 import DAO.ClassesDB.Status;
+import DAO.ClassesDB.Voo;
 import DAO.SelectDAO;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JTable;
+import org.jdesktop.swingx.JXDatePicker;
 
 /**
  *
@@ -17,6 +20,8 @@ import javax.swing.JComboBox;
  */
 public class FormUtils{
     private SelectDAO slctDAO;
+    private Voo voo;
+    private VooTableModel model;
    
     public void carregaComboBoxEstado(JComboBox cmb){
         slctDAO = new SelectDAO();
@@ -72,6 +77,18 @@ public class FormUtils{
         return null;
     }
    
+    public void carregaListaVoos(JTable tbl, String origem, String destino, JXDatePicker dtPartida){
+        // Remove o modelo antigo
+        tbl.removeAll();
+        // Seta os parametros de busca
+        voo = new Voo();
+        voo.setOrigem(origem);
+        voo.setDestino(destino);
+        voo.setDtPartida(dtPartida.getDate());
+        slctDAO = new SelectDAO();
+        model = new VooTableModel(slctDAO.getVooComParametros(voo));
+        tbl.setModel(model);     
+    }
     
     public FormUtils(){
         

@@ -204,7 +204,7 @@ public final class InsertDAO extends DAO{
         return insertEmpresa;
     }
     
-    private void setCliente(Cliente cliente) throws SQLException{
+    private static void setCliente(Cliente cliente) throws SQLException{
         preparaSQL.setString(1, cliente.getNmCli());
         preparaSQL.setString(2, cliente.getDocCli());
         preparaSQL.setString(3, cliente.getOrgCli());
@@ -221,7 +221,7 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(14, cliente.getObsCli());
     }
     
-    private void setEmpresa(Empresa empresa) throws SQLException{
+    private static void setEmpresa(Empresa empresa) throws SQLException{
         preparaSQL.setString(1,empresa.getFantasiaEmp());
         preparaSQL.setString(2,empresa.getInestEmp());
         preparaSQL.setString(3,empresa.getCnpj());
@@ -235,7 +235,7 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(11,empresa.getObsEmp());
     }
     
-    private void setFuncionario(Funcionario funcionario) throws SQLException{
+    private static void setFuncionario(Funcionario funcionario) throws SQLException{
         preparaSQL.setString(1, funcionario.getNmFunc());
         preparaSQL.setString(2, funcionario.getCpfFunc());
         preparaSQL.setString(3, funcionario.getTelFunc());
@@ -245,20 +245,20 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(7, funcionario.getCnpjEmp().getCnpj());
     }
     
-    private void setPassagem(Passagem passagem) throws SQLException{
+    private static void setPassagem(Passagem passagem) throws SQLException{
         preparaSQL.setString(1, passagem.getCpfPassageiro().getCpfCli());
         preparaSQL.setInt(2, passagem.getPassBagagem());
         preparaSQL.setString(3, passagem.getPassLocalizador());
     }
     
-    private void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
+    private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
         preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
         preparaSQL.setInt(2, poltrona.getPoltrona());
         preparaSQL.setString(3, poltrona.getLocalizador().getPassLocalizador());
         preparaSQL.setString(4, poltrona.getStatus().getStatus());
     }
     
-    private void setVoo(Voo voo) throws SQLException{
+    private static void setVoo(Voo voo) throws SQLException{
         preparaSQL.setString(1, voo.getVooTag());
         preparaSQL.setString(2, voo.getOrigem());
         preparaSQL.setString(3, voo.getDestino());

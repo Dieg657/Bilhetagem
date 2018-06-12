@@ -5,6 +5,7 @@
  */
 package Formulario;
 
+import Utilidades.FormUtils;
 import DAO.ClassesDB.Empresa;
 import DAO.ClassesDB.Funcionario;
 import Utilidades.Facade;
@@ -67,6 +68,7 @@ public class formFuncionario extends javax.swing.JFrame {
         cmbSexo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Funcionario");
 
         jLabel1.setText("Nome:");
 

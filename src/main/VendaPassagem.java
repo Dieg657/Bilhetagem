@@ -25,7 +25,7 @@ public class VendaPassagem {
         GerarCidades objCidades = new GerarCidades();
         objCidades.criaConexaoCidades();
         
-        objCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(1), objCidades.getCidadesConectadas().get(9));
+        GerarCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(1), objCidades.getCidadesConectadas().get(9));
         
         formPrincipal form = new formPrincipal();
         form.setVisible(true);

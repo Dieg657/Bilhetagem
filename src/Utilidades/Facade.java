@@ -7,7 +7,6 @@ package Utilidades;
 
 import DAO.DAO;
 import DAO.FactoryDAO;
-import java.lang.RuntimeException;
 
 /**
  *
@@ -28,7 +27,7 @@ public final class Facade {
         }
     }
     
-     public void updateDataDB(String operacao, Object obj){
+    public void updateDataDB(String operacao, Object obj){
         try {
             factoryDAO = new FactoryDAO();
             objDAO = factoryDAO.getDAO(operacao.toLowerCase());
