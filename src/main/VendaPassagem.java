@@ -4,15 +4,14 @@
  * and open the template in the editor.
  */
 package main;
-import DAO.ClassesDB.Status;
 import DAO.SQLConnect;
+import Formulario.Login;
 import Utilidades.GerarCidades;
 import Formulario.formPrincipal;
 import Utilidades.FormUtils;
 import Utilidades.GerarDados;
-import java.sql.ResultSet;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.sql.Statement;
 /**
  *
  * @author diego
@@ -23,41 +22,14 @@ public class VendaPassagem {
      * @param args the command line arguments
      * @throws java.sql.SQLException
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, UnsupportedEncodingException, Exception {
         GerarCidades objCidades = new GerarCidades();
         objCidades.criaConexaoCidades();
         
         GerarCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(1), objCidades.getCidadesConectadas().get(9));
-        
-        FormUtils.isFuncionario(true);
-        
-        formPrincipal form = new formPrincipal();
-        form.setVisible(true);
-        
-        SQLConnect.getInstance();
-        //GerarDados.geraVoos();
-        //String sql = "SELECT * FROM tb_status";
-        //Statement stmt = SQLConnect.getInstance().createStatement();
-        //ResultSet rs = stmt.executeQuery(sql);
-        
-        //while (rs.next()) {            
-        //    System.out.println("ID: " + rs.getInt("id_status") + ", Status: " + rs.getString("status"));
-        //}
-                        
-        
-        /*
-        FactoryPessoa factory = new FactoryPessoa();
-        Pessoa pessoa;
-        
-        String nome = "Aline dos Santos Soares";
-        String sexo = "Masculino";
-        
-        try {
-            pessoa = factory.getPessoa(nome, sexo);
-            System.out.println("O sexo do passageiro é: " + pessoa.getSexo());
-        } catch (Exception excep) {
-            System.out.println(excep.getMessage());
-        }*/
+
+        Login form = new Login();
+        form.setVisible(true);     
     }
     
 }

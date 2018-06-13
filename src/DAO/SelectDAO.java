@@ -11,6 +11,8 @@ import DAO.ClassesDB.Estado;
 import DAO.ClassesDB.Funcionario;
 import DAO.ClassesDB.Passagem;
 import DAO.ClassesDB.Status;
+import DAO.ClassesDB.UsuarioCliente;
+import DAO.ClassesDB.UsuarioFuncionario;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
 import java.sql.PreparedStatement;
@@ -53,7 +55,8 @@ public final class SelectDAO extends DAO{
         "    `tb_cliente`.`email_cli`,\n" +
         "    `tb_cliente`.`obs_cli`\n" +
         "FROM `aviao`.`tb_cliente`";
-    private static final String selectClienteLogin = "SELECT `tb_usuario_cli`.`cpf_cli`,`tb_usuario_cli`.`usuario`,`tb_usuario_cli`.`senha` FROM `aviao`.`tb_usuario_cli`";
+    private static final String selectClienteLogin = "SELECT `tb_usuario_cli`.`cpf_cli`,`tb_usuario_cli`.`usuario`,`tb_usuario_cli`.`senha` FROM `aviao`.`tb_usuario_cli` \n" 
+            + "WHERE `cpf_cli` = ? AND `senha` = ?";
     
     private static final String selectFuncionario = "SELECT `tb_funcionario`.`nm_func`,\n" +
         "    `tb_funcionario`.`cpf_func`,\n" +
@@ -64,10 +67,15 @@ public final class SelectDAO extends DAO{
         "    `tb_funcionario`.`cnpj_emp`\n" +
         "FROM `aviao`.`tb_funcionario`";
     
+    private static final String selectEmpresaCPF = "SELECT `tb_empresa`.`cnpj` FROM `tb_empresa` INNER JOIN `tb_funcionario`\n" + 
+            "ON `tb_empresa`.`cnpj` = `tb_funcionario`.`cnpj_emp`\n" + 
+            " WHERE `tb_funcionario`.`cpf_func` = ? ";
+    
     private static final String selectFuncionarioLogin = "SELECT `tb_usuario_func`.`cpf_func`,\n" +
         "    `tb_usuario_func`.`usuario`,\n" +
         "    `tb_usuario_func`.`senha`\n" +
-        "FROM `aviao`.`tb_usuario_func`";
+        "FROM `aviao`.`tb_usuario_func`" +
+        "WHERE `cpf_func` = ? AND `senha` = ?";
     
     //Voo
     private static final String selectVoo = "SELECT `tb_voo`.`voo_tag`,\n" +
@@ -86,6 +94,13 @@ public final class SelectDAO extends DAO{
         "    `tb_voo_poltrona`.`localizador`,\n" +
         "    `tb_voo_poltrona`.`status`\n" +
         "FROM `aviao`.`tb_voo_poltrona`";
+    
+    private static final String selectVooPoltronaLivre = "SELECT `tb_voo_poltrona`.`idtb_voo_poltrona`,\n" +
+        "    `tb_voo_poltrona`.`voo_tag`,\n" +
+        "    `tb_voo_poltrona`.`poltrona`,\n" +
+        "    `tb_voo_poltrona`.`localizador`,\n" +
+        "    `tb_voo_poltrona`.`status`\n" +
+        "FROM `aviao`.`tb_voo_poltrona` WHERE `status` = 1 AND `voo_tag` = ?";
     
     private static final String selectPassagem = "SELECT `tb_passagem`.`cpf_passageiro`,\n" +
         "    `tb_passagem`.`pass_bagagem`,\n" +
@@ -110,8 +125,6 @@ public final class SelectDAO extends DAO{
         "    `tb_empresa`.`obs_emp`\n" +
         "FROM `aviao`.`tb_empresa`";
     
-    
-    
     // <editor-fold defaultstate="collapsed" desc="Prepara parametros"> 
     private static void setVoo(Voo voo, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, voo.getOrigem());
@@ -127,9 +140,68 @@ public final class SelectDAO extends DAO{
         preparaSQL.setInt(1, status.getIdStatus());
     }
     
+    private static void setUsuarioLogin(UsuarioCliente usuario, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setString(1, usuario.getCpfCli());
+        preparaSQL.setString(2, usuario.getSenha());
+    }
+    
+    private static void setUsuarioFuncionario(UsuarioFuncionario usuario, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setString(1, usuario.getCpfFunc());
+        preparaSQL.setString(2, usuario.getSenha());
+    }
+    
+    private static void setEmpresa (Empresa empresa, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setString(1, empresa.getFantasiaEmp());
+        preparaSQL.setString(2, empresa.getCnpj());
+    }
+    
+    private static void setEmpresaCPF(String cpf, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setString(1, cpf);
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Consultas com Parametros"> 
+    public UsuarioCliente getUsuarioCliente(UsuarioCliente usuario){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            UsuarioCliente usuarioLogin;
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectClienteLogin());
+            setUsuarioLogin(usuario, preparaSQL);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                usuarioLogin = getUsuario(resultadoSQL);
+                return usuarioLogin;
+            }
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    public UsuarioFuncionario getUsuarioFuncionario(UsuarioFuncionario usuario){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            UsuarioFuncionario usuarioLogin;
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectFuncionarioLogin());
+            setUsuarioFuncionario(usuario, preparaSQL);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                usuarioLogin = getUsuarioFuncionario(resultadoSQL);
+                return usuarioLogin;
+            }
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    
     public List<Voo> getVooComParametros(Voo voo){
         PreparedStatement preparaSQL;    
         ResultSet resultadoSQL;
@@ -171,6 +243,26 @@ public final class SelectDAO extends DAO{
         return null;
     }
     
+    public List<VooPoltrona> getPoltronaLivre(VooPoltrona poltrona) throws SQLException{
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            List<VooPoltrona> lstPoltrona = new ArrayList<>();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVooPoltronaLivre());
+            setVooPoltrona(poltrona, preparaSQL);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                lstPoltrona.add(getVooPoltrona(resultadoSQL));
+            }
+            return lstPoltrona;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    
     public Status getStatusParametros(Status status){
         PreparedStatement preparaSQL;    
         ResultSet resultadoSQL;
@@ -191,6 +283,25 @@ public final class SelectDAO extends DAO{
         return null;
     }
     
+    public Empresa getEmpresaCNPJ(String CPF) throws SQLException{
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            Empresa empresa = new Empresa();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(selectEmpresaCPF);
+            setEmpresaCPF(CPF, preparaSQL);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                empresa = getEmpresaCNPJ(resultadoSQL);
+            }
+            return empresa;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Consultas sem Parametros"> 
@@ -212,6 +323,28 @@ public final class SelectDAO extends DAO{
         }
         return null;
     }
+    
+    public Empresa getEmpresa(Empresa empresa) throws SQLException{
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            Empresa resEmpresa = new Empresa();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectEmpresa() + 
+                    " WHERE `fantasia_emp` = ? AND `cnpj` = ?");
+            setEmpresa(empresa, preparaSQL);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                resEmpresa = getEmpresa(resultadoSQL);
+                return resEmpresa;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+        
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Getters"> 
@@ -284,9 +417,17 @@ public final class SelectDAO extends DAO{
     public static String getSelectEmpresa() {
         return selectEmpresa;
     }
+    /**
+     * @return the selectVooPoltronaLivre
+     */
+    public static String getSelectVooPoltronaLivre() {
+        return selectVooPoltronaLivre;
+    }
+    
     // </editor-fold>
     
-    // <editor-fold defaultstate="collapsed" desc="ResultSet">       
+    // <editor-fold defaultstate="collapsed" desc="ResultSet">  
+    
     private Cliente getCliente(ResultSet rs) throws SQLException{
         cliente = new Cliente();
         uf = new Estado();
@@ -309,6 +450,15 @@ public final class SelectDAO extends DAO{
         return cliente;
     }
     
+    private UsuarioCliente getUsuario(ResultSet rs) throws SQLException{
+        cliente = new Cliente(rs.getString("cpf_cli"));
+        loginCliente = new UsuarioCliente(cliente.getCpfCli());
+        loginCliente.setUsuario("usuario");
+        loginCliente.setUsuario("senha");
+        
+        return loginCliente;
+    }
+    
     private Empresa getEmpresa (ResultSet rs) throws SQLException{
         empresa = new Empresa();
         estado = new Estado();
@@ -327,6 +477,15 @@ public final class SelectDAO extends DAO{
         return empresa;
     }
     
+      
+    private Empresa getEmpresaCNPJ (ResultSet rs) throws SQLException{
+        empresa = new Empresa();
+        empresa.setCnpj(rs.getString("cnpj"));
+        
+        return empresa;
+    }
+    
+    
     private Funcionario getFuncionario (ResultSet rs) throws SQLException{
         funcionario = new Funcionario();
         funcionario.setNmFunc(rs.getString("nm_func"));
@@ -338,6 +497,15 @@ public final class SelectDAO extends DAO{
         empresa.setCnpj(rs.getString("cnpj_emp")); funcionario.setCnpjEmp(empresa);
         
         return funcionario;
+    }
+    
+    private UsuarioFuncionario getUsuarioFuncionario(ResultSet rs) throws SQLException{
+        funcionario = new Funcionario(rs.getString("cpf_func"));
+        loginFuncionario = new UsuarioFuncionario(funcionario.getCpfFunc());
+        loginFuncionario.setUsuario("usuario");
+        loginFuncionario.setUsuario("senha");
+        
+        return loginFuncionario;
     }
     
     private Estado getEstado (ResultSet rs) throws SQLException{
@@ -461,4 +629,5 @@ public final class SelectDAO extends DAO{
     public void setOperacao(String operacao) {
          this.operacao = operacao;
      }
+    
 }

@@ -206,7 +206,8 @@ public class formPassagem extends javax.swing.JFrame {
             formVoo formPoltronas = new formVoo(tblVoos.getValueAt(tblVoos.getSelectedRow(), 0));
             formPoltronas.setVisible(true);
         }else{
-            System.out.println("Não é funcionario!");
+            formCompraPassagem frmCompraPassagem = new formCompraPassagem(tblVoos.getModel(),tblVoos.getSelectedRow());
+            frmCompraPassagem.setVisible(true);
         }
     }//GEN-LAST:event_btnProsseguirActionPerformed
 

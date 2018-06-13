@@ -5,15 +5,19 @@
  */
 package Utilidades;
 
+import DAO.ClassesDB.Cliente;
+import DAO.ClassesDB.Empresa;
 import DAO.ClassesDB.Estado;
 import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
 import DAO.SelectDAO;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -28,6 +32,9 @@ public class FormUtils{
     private Voo voo;
     private VooPoltrona poltrona;
     private static boolean isFuncionario = false; 
+    public static Cliente cliente;
+    public static Empresa empresa;
+    public static String cpf;
    
     public void carregaDataAtual(JXDatePicker datePicker){
         datePicker.setDate(Date.from(Instant.now()));
@@ -66,14 +73,20 @@ public class FormUtils{
             cmb.addItem(st);
         }        
     }
+   
     
-    public void carregaComboBoxSexo(JComboBox cmb){
+    public void carregaComboBoxEmpresa(JComboBox cmb) throws SQLException{
+        slctDAO = new SelectDAO();
+        int cont = 0;
         cmb.removeAllItems();
-        Item st = null;
-        st = new Item(1, "Masculino");
-        cmb.addItem(st);
-        st = new Item(2, "Feminino");
-        cmb.addItem(st);
+        ItemStatus st = null;
+        List<Empresa> lst;
+        lst = slctDAO.getEmpresas();
+        for (Empresa empresa : lst) {
+            st = new ItemStatus(cont, empresa.getFantasiaEmp());
+            cmb.addItem(st);
+            cont++;
+        }    
     }
     
     public String getTextNumber(String text){
@@ -108,16 +121,21 @@ public class FormUtils{
         tbl.setModel(modelPoltrona);
     }
     
-    public void carregaComboBoxPoltrona(JComboBox cmb, Voo voo){
+    public void carregaComboBoxPoltrona(JComboBox cmb, Object obj) throws SQLException{
         cmb.removeAllItems();
-        List<VooPoltrona> lstPoltrona;
-        slctDAO = new SelectDAO();
-        VooPoltrona poltrona = new VooPoltrona();
-        poltrona.setVooTag(voo);
-        lstPoltrona = slctDAO.getVooPoltronaParametros(poltrona);
-        for (VooPoltrona item : lstPoltrona) {
-            cmb.addItem(new Item(item.getIdtbVooPoltrona(), Integer.toString(item.getPoltrona())));
+        try{
+             List<VooPoltrona> lstPoltrona;
+            slctDAO = new SelectDAO();
+            VooPoltrona poltrona = new VooPoltrona();
+            poltrona.setVooTag((Voo) obj);
+            lstPoltrona = slctDAO.getPoltronaLivre(poltrona);
+            for (VooPoltrona item : lstPoltrona) {
+                cmb.addItem(new Item(item.getIdtbVooPoltrona(), Integer.toString(item.getPoltrona())));
+            }
+        }catch(SQLException ex){
+            System.out.println(ex.getMessage());
         }
+       
     }
     
     public void carregaCidades(JComboBox cmb){
@@ -129,6 +147,52 @@ public class FormUtils{
         }
     }
     
+    public void carregaComboBoxSexo(JComboBox cmb){
+        cmb.removeAllItems();
+        Item st = null;
+        st = new Item(1, "Masculino");
+        cmb.addItem(st);
+        st = new Item(2, "Feminino");
+        cmb.addItem(st);
+    }
+    
+    public void montaFormEditarPoltrona(Object[] obj){
+        JLabel lbStatus = (JLabel) obj[0];
+        JLabel lbNumPoltrona = (JLabel) obj[1];
+        JComboBox cmbStatus = (JComboBox) obj[2];
+        poltrona = (VooPoltrona) obj[3];
+        
+        if(poltrona.getPoltrona() > 0 && poltrona.getPoltrona() < 10)
+            lbNumPoltrona.setText("0" + String.valueOf(poltrona.getPoltrona()));
+        else
+            lbNumPoltrona.setText(String.valueOf(poltrona.getPoltrona()));
+        
+        cmbStatus.setSelectedIndex((poltrona.getStatus().getIdStatus()-1));
+        
+        if(poltrona.getLocalizador().getPassLocalizador() == null && cmbStatus.getSelectedIndex() > 0){
+            lbStatus.setText("Poltrona indisponível!");
+        } else if(cmbStatus.getSelectedIndex() > 0){
+            lbStatus.setText("Poltrona indisponível!");
+        }else{
+            lbStatus.setText("Poltrona disponível");
+        }
+        
+        
+    }
+    
+    public void preencheComboBoxPoltrona(JComboBox cmb, Object obj){
+        try {
+            voo = (Voo) obj;
+            poltrona.setVooTag(voo);
+            slctDAO = new SelectDAO();
+            List<VooPoltrona> lstPoltronaLivre = slctDAO.getPoltronaLivre(poltrona);
+            for (VooPoltrona item : lstPoltronaLivre) {
+                cmb.addItem(new Item(item.getPoltrona(), String.valueOf(item.getPoltrona())));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
     public static void isFuncionario(boolean s){
         isFuncionario = s;
     }

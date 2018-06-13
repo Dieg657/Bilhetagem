@@ -8,6 +8,7 @@ package Formulario;
 import Utilidades.FormUtils;
 import DAO.ClassesDB.Empresa;
 import DAO.ClassesDB.Funcionario;
+import DAO.ClassesDB.UsuarioFuncionario;
 import Utilidades.Facade;
 
 /**
@@ -197,10 +198,12 @@ public class formFuncionario extends javax.swing.JFrame {
         switch(update){
             case 1:{
                 this.updateData();
+                this.dispose();
                 break;
             }
             default:{
                 this.insertData();
+                this.dispose();
                 break;
             }
         }
@@ -241,8 +244,7 @@ public class formFuncionario extends javax.swing.JFrame {
         });
     }
     
-    private Funcionario setEntityData(Funcionario funcionario){
-        funcionario = new Funcionario();       
+    private Funcionario setEntityData(Funcionario funcionario){       
         if(!formUtils.getTextNumber(txtCPF.getText()).isEmpty()){        
             if(!formUtils.getTextNumber(txtTelefone.getText()).isEmpty()){
                 funcionario.setNmFunc(txtNome.getText());
@@ -260,8 +262,11 @@ public class formFuncionario extends javax.swing.JFrame {
     
     private void insertData(){
         try {
-            Funcionario objFuncionario = null;
+            Funcionario objFuncionario = new Funcionario();;
             Facade.getInstance().insertDataDB("insert", setEntityData(objFuncionario));
+            UsuarioFuncionario objLogin = new UsuarioFuncionario();
+            objLogin.setCpfFunc(objFuncionario.getCpfFunc());
+            Facade.getInstance().insertDataDB("insert", objLogin);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

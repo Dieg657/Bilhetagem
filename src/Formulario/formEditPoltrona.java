@@ -5,7 +5,9 @@
  */
 package Formulario;
 
+import DAO.ClassesDB.Status;
 import DAO.ClassesDB.VooPoltrona;
+import Utilidades.Facade;
 import Utilidades.FormUtils;
 import Utilidades.VooPoltronaTableModel;
 import java.awt.Image;
@@ -16,19 +18,27 @@ import java.awt.Image;
  * @author diego.soares
  */
 public class formEditPoltrona extends javax.swing.JFrame {
-    FormUtils objUForm;
-    VooPoltrona poltrona;
-    VooPoltronaTableModel tblModel;
+    private FormUtils formUtils;
+    private VooPoltrona poltrona;
+    private VooPoltronaTableModel tblModel;
+    private Object[] objectArray;
     /**
      * Creates new form formEditPoltrona
      * @param obj
+     * @param indiceLinha
      */
     public formEditPoltrona(Object obj, int indiceLinha) {
         initComponents();
-        objUForm = new FormUtils();
-        objUForm.carregaComboBoxStatus(cmbStatus);
+        formUtils = new FormUtils();
+        formUtils.carregaComboBoxStatus(cmbStatus);
         tblModel = (VooPoltronaTableModel) obj;
         poltrona = tblModel.getVooPoltrona(indiceLinha);
+        objectArray = new Object[4];
+        objectArray[0] = lbStatusPoltrona;
+        objectArray[1] = lbNumPoltrona;
+        objectArray[2] = cmbStatus;
+        objectArray[3] = poltrona;
+        formUtils.montaFormEditarPoltrona(objectArray);
     }
 
     private formEditPoltrona() {
@@ -51,8 +61,8 @@ public class formEditPoltrona extends javax.swing.JFrame {
         lbStatusPoltrona = new javax.swing.JLabel();
         cmbStatus = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        btnAcao = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -70,27 +80,37 @@ public class formEditPoltrona extends javax.swing.JFrame {
 
         jLabel3.setText("Status:");
         jPanel1.add(jLabel3);
-        jLabel3.setBounds(300, 10, 60, 15);
+        jLabel3.setBounds(270, 10, 60, 15);
 
         lbStatusPoltrona.setText("jLabel4");
         jPanel1.add(lbStatusPoltrona);
-        lbStatusPoltrona.setBounds(360, 10, 49, 15);
+        lbStatusPoltrona.setBounds(330, 10, 200, 15);
 
         cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel1.add(cmbStatus);
-        cmbStatus.setBounds(300, 60, 220, 24);
+        cmbStatus.setBounds(270, 60, 220, 24);
 
         jLabel5.setText("Status da Poltrona:");
         jPanel1.add(jLabel5);
-        jLabel5.setBounds(300, 40, 140, 15);
+        jLabel5.setBounds(270, 40, 140, 15);
 
-        jButton1.setText("Cancelar");
-        jPanel1.add(jButton1);
-        jButton1.setBounds(300, 150, 93, 25);
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnCancelar);
+        btnCancelar.setBounds(280, 220, 93, 25);
 
-        jButton2.setText("Gravar");
-        jPanel1.add(jButton2);
-        jButton2.setBounds(420, 150, 80, 25);
+        btnAcao.setText("Gravar");
+        btnAcao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAcaoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAcao);
+        btnAcao.setBounds(400, 220, 90, 25);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -111,6 +131,16 @@ public class formEditPoltrona extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnAcaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcaoActionPerformed
+        poltrona.setStatus(new Status((cmbStatus.getSelectedIndex()+1)));
+        Facade.getInstance().updateDataDB("update", poltrona);
+        this.dispose();
+    }//GEN-LAST:event_btnAcaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -147,9 +177,9 @@ public class formEditPoltrona extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAcao;
+    private javax.swing.JButton btnCancelar;
     private javax.swing.JComboBox<String> cmbStatus;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;

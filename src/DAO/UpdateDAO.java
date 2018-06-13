@@ -9,7 +9,6 @@ import DAO.ClassesDB.Cliente;
 import DAO.ClassesDB.Empresa;
 import DAO.ClassesDB.Funcionario;
 import DAO.ClassesDB.Status;
-import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,9 +70,11 @@ public final class UpdateDAO extends DAO {
             "`email_emp` = ? ,\n" +
             "`obs_emp` = ? \n" +
             "WHERE `cnpj` = ? ";
-       
+    /*Mover o cliente de uma poltrona com problema para outra*/
     private static final String updateClienteVooPoltrona = "call updateCliPoltrona(?,?,?)";
+    /*Define a poltrona como manutenção*/
     private static final String updateStatusPoltronaManutencao = "call updateStatusPoltronaManutencao(?,?,?)";
+    /*Desvincula a poltrona da passagem, ao desvincular faz-se necessário vincular a passagem solta com novo itinerário*/
     private static final String updateStatusPoltronaLivre = "call updateStatusPoltronaLivre(?,?,?)";
     
     private static final String selectPoltronaLivre = "SELECT `tb_voo_poltrona`.`poltrona` FROM `aviao`.`tb_voo_poltrona`\n" +
@@ -154,14 +155,13 @@ public final class UpdateDAO extends DAO {
         try {
             PreparedStatement preparaSQL;
             ResultSet resultadoSQL;
-            VooPoltrona novaPoltrona = new VooPoltrona();
+            VooPoltrona novaPoltrona;
             preparaSQL = SQLConnect.getInstance().prepareStatement(selectPoltronaLivre);
             setVooTag(poltrona.getVooTag().getVooTag(), preparaSQL);
             resultadoSQL = preparaSQL.executeQuery();
-            if(resultadoSQL.getRow() > 0){
-                poltrona = getPoltronaLivre(resultadoSQL);
+            if(resultadoSQL.next()){
+                novaPoltrona = getPoltronaLivre(resultadoSQL);
                 novaPoltrona.setVooTag(poltrona.getVooTag());
-                novaPoltrona.setPoltrona(poltrona.getPoltrona());
                 novaPoltrona.setLocalizador(poltrona.getLocalizador());
                 novaPoltrona.setStatus(new Status(2));
                 return novaPoltrona;
@@ -203,48 +203,70 @@ public final class UpdateDAO extends DAO {
     void atualizaStatusVooPoltrona(VooPoltrona poltrona, int op) throws SQLException{
         PreparedStatement preparaSQL;
         /*
-            Definindo a poltrona como Livre ou em Manutençao
-        */
-        if(op == 1){
-            try {
-                preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaLivre);
-                setVooPoltrona(poltrona, preparaSQL);
-                int executeUpdate = preparaSQL.executeUpdate();
-                if(executeUpdate == 1)
-                    System.out.println("Atualizou no banco de dados!");
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
-            }finally{
-                closeAll();
-            }
-        }else{
-            VooPoltrona nvPoltrona = new VooPoltrona();
-            
-            try {
-                nvPoltrona = moveParaAProximaPoltrona(poltrona);
+        Definindo a poltrona como Livre ou em Manutençao
+         */
+        switch (op) {
+            case 1:
+                try {
+                    preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaLivre);
+                    setVooPoltrona(poltrona, preparaSQL);
+                    int executeUpdate = preparaSQL.executeUpdate();
+                    if(executeUpdate == 1)
+                        System.out.println("Atualizou poltrona para Livre no banco de dados!");
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+                }finally{
+                    closeAll();
+                }   
+                break;
+            case 2:
+
+                try {
+                    preparaSQL = SQLConnect.getInstance().prepareStatement(updateClienteVooPoltrona);
+                    setVooPoltrona(poltrona,preparaSQL);
+                    int executeUpdate = preparaSQL.executeUpdate();
+                    if(executeUpdate == 1)
+                        System.out.println("Atualizou poltrona para Ocupada no banco de dados!");
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+                }finally{
+                    closeAll();
+                }
+                break;
+            case 3:
+                VooPoltrona nvPoltrona = new VooPoltrona();
                 
-                preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaManutencao);
-                setVooPoltrona(poltrona,preparaSQL);
-                int executeUpdate = preparaSQL.executeUpdate();
-                if(executeUpdate == 1)
-                    System.out.println("Atualizou poltrona para Livre no banco de dados!");
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
-            }finally{
-                closeAll();
-            }
-            
-            try {
-                preparaSQL = SQLConnect.getInstance().prepareStatement(updateClienteVooPoltrona);
-                setVooPoltrona(nvPoltrona, preparaSQL);
-                int executeUpdate = preparaSQL.executeUpdate();
-                if(executeUpdate == 1)
-                    System.out.println("Atualizou a poltrona para Ocupada no banco de dados!");
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
-            }finally{
-                closeAll();
-            }
+                try {
+                    nvPoltrona = moveParaAProximaPoltrona(poltrona); //Objeto com a posição nova de poltrona
+                    
+                    preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaManutencao);
+                    setVooPoltrona(poltrona, preparaSQL);
+                    int executeUpdate = preparaSQL.executeUpdate();
+                    if(executeUpdate == 1)
+                        System.out.println("Atualizou poltrona para Manutenção no banco de dados!");
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+                }finally{
+                    closeAll();
+                }   
+                
+                try {
+  
+                    /* Insere o objeto com a posição nova no banco de dados! */
+                    preparaSQL = SQLConnect.getInstance().prepareStatement(updateClienteVooPoltrona);
+                    setVooPoltrona(nvPoltrona, preparaSQL);
+                    int executeUpdate = preparaSQL.executeUpdate();
+                    if(executeUpdate == 1)
+                        System.out.println("Atualizou poltrona para Ocupada no banco de dados!");
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados");
+                }finally{
+                    closeAll();
+                }
+                
+                break;
+            default:
+                break;
         }
     }
     
@@ -295,7 +317,14 @@ public final class UpdateDAO extends DAO {
                         break;
                     }
                     case 2:{
-                        //Não faz nada
+                        /*
+                            Coloca a poltrona como ocupada
+                        */
+                        try {
+                            atualizaStatusVooPoltrona(poltrona,2);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         break;
                     }
                     case 3:{
@@ -303,7 +332,7 @@ public final class UpdateDAO extends DAO {
                             Move para a proxima poltrona livre, se não houver exibe mensagem de erro!
                         */
                         try {
-                            atualizaStatusVooPoltrona(poltrona,2);
+                            atualizaStatusVooPoltrona(poltrona,3);
                         } catch (SQLException ex) {
                             Logger.getLogger(UpdateDAO.class.getName()).log(Level.SEVERE, null, ex);
                         }

@@ -274,7 +274,7 @@ DELIMITER $$
 USE `aviao`$$
 CREATE PROCEDURE `updateStatusPoltronaManutencao` (idVoo varchar(20), numPoltrona int, localizador varchar(20))
 BEGIN
-	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = null , `status` = 3 WHERE `voo_tag` = idVoo AND `poltrona` = numPoltrona AND `localizador` = localizador;
+	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = null , `status` = 3 WHERE (`voo_tag` = idVoo AND `poltrona` = numPoltrona);
 END$$
 
 DELIMITER ;
@@ -287,7 +287,7 @@ DELIMITER $$
 USE `aviao`$$
 CREATE PROCEDURE `updateStatusPoltronaLivre` (idVoo varchar(20), numPoltrona int, localizador varchar(20))
 BEGIN
-	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = null , `status` = 1 WHERE `voo_tag` = idVoo AND `poltrona` = numPoltrona AND `localizador` = localizador;
+	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = null , `status` = 1 WHERE (`voo_tag` = idVoo AND `poltrona` = numPoltrona) OR `localizador` = localizador;
 END$$
 
 DELIMITER ;
@@ -335,6 +335,6 @@ INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('São Paulo','SP');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Sergipe','SE');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Tocantins', 'TO');
 
+INSERT INTO `tb_empresa` (`fantasia_emp`,`inest_emp`,`cnpj`,`end_emp`,`num_emp`,`compl_emp`,`bairro_emp`,`cidade_emp`,`idest_emp`,`cep_emp`,`email_emp`,`obs_emp`) VALUES ('LATAM','155262','01222333000123','Av. Paulista','1550','Ed. Boulevard','Centro','São Paulo',25,70442000,'faleconosco@latam.com.br','Sem observações');
 
 COMMIT;
-

@@ -8,6 +8,7 @@ package Formulario;
 import Utilidades.FormUtils;
 import DAO.ClassesDB.Cliente;
 import DAO.ClassesDB.Estado;
+import DAO.ClassesDB.UsuarioCliente;
 import Utilidades.Facade;
 import javax.swing.JFrame;
 /**
@@ -295,6 +296,7 @@ public class formCliente extends JFrame {
             }
             default:{
                 this.insertData();
+                this.dispose();
                 break;
             }
         }
@@ -343,7 +345,6 @@ public class formCliente extends JFrame {
     
          
     private Cliente setEntityData(Cliente cliente){
-        cliente = new Cliente();
          
         if(!objUForm.getTextNumber(txtCPF.getText()).isEmpty()){        
             cliente.setNmCli(txtNome.getText());            
@@ -370,8 +371,13 @@ public class formCliente extends JFrame {
     
     private void insertData(){
         try {
-            Cliente objCliente = null;
+            Cliente objCliente = new Cliente();
             Facade.getInstance().insertDataDB("insert",setEntityData(objCliente));
+            UsuarioCliente usuario = new UsuarioCliente();
+            usuario.setCliente(objCliente);
+            usuario.setCpfCli(objCliente.getCpfCli());
+            usuario.setSenha("12345");
+            Facade.getInstance().insertDataDB("insert", usuario);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

@@ -128,9 +128,8 @@ public class formVoo extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAcaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcaoActionPerformed
-        formEditPoltrona formPoltrona = new formEditPoltrona(tblPoltrona.getValueAt(tblPoltrona.getSelectedRow(), 4),0);
-        formPoltrona.setVisible(true);
-        
+            formEditPoltrona formPoltrona = new formEditPoltrona(tblPoltrona.getModel(),tblPoltrona.getSelectedRow());
+            formPoltrona.setVisible(true);
     }//GEN-LAST:event_btnAcaoActionPerformed
 
     /**

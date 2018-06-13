@@ -5,8 +5,21 @@
  */
 package Formulario;
 
+import DAO.ClassesDB.Passagem;
+import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
+import DAO.ClassesDB.VooPoltrona;
+import DAO.SelectDAO;
+import Utilidades.Facade;
 import Utilidades.FormUtils;
+import Utilidades.GerarDados;
+import Utilidades.VooTableModel;
+import java.awt.HeadlessException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,18 +28,27 @@ import Utilidades.FormUtils;
 public class formCompraPassagem extends javax.swing.JFrame {
     private FormUtils formUtils;
     private Voo voo;
+    private VooTableModel model;
     /**
      * Creates new form fromCompraPassagem
      * @param parametro
      */
-    public formCompraPassagem(Voo parametro) {
+    public formCompraPassagem(Object obj, int indiceLinha) {
         initComponents();
-        this.voo = parametro;
-        formUtils.carregaComboBoxPoltrona(cmbPoltrona, voo);
+        txtVlPassagem.setEditable(false);
+        formUtils = new FormUtils();
+        chkMaiorQue.setEnabled(false);
+        model = (VooTableModel) obj;
+        voo = model.getVoo(indiceLinha);
+        try {
+            formUtils.carregaComboBoxPoltrona(cmbPoltrona, voo);
+        } catch (SQLException ex) {
+            Logger.getLogger(formCompraPassagem.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
-    public formCompraPassagem(){
-        initComponents();
+
+    private formCompraPassagem() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -42,15 +64,15 @@ public class formCompraPassagem extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         cmbPoltrona = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        chkBagagem = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        chkMaiorQue = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        txtVlPassagem = new javax.swing.JTextField();
+        btnComprar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Poltrona:");
 
@@ -58,17 +80,37 @@ public class formCompraPassagem extends javax.swing.JFrame {
 
         jLabel2.setText("Bagagem:");
 
-        jCheckBox1.setText("Sim");
+        chkBagagem.setText("Sim");
+        chkBagagem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkBagagemMouseClicked(evt);
+            }
+        });
 
         jLabel3.setText("Peso maior que 30KG?");
 
-        jCheckBox2.setText("Sim");
+        chkMaiorQue.setText("Sim");
+        chkMaiorQue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkMaiorQueActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Valor Passagem:");
 
-        jButton1.setText("Comprar");
+        btnComprar.setText("Comprar");
+        btnComprar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnComprarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Cancelar");
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -84,20 +126,20 @@ public class formCompraPassagem extends javax.swing.JFrame {
                         .addGap(13, 13, 13)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jCheckBox1))
+                            .addComponent(chkBagagem))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox2)
+                            .addComponent(chkMaiorQue)
                             .addComponent(jLabel3)))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtVlPassagem, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnCancelar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1))
+                .addComponent(btnComprar))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,16 +152,16 @@ public class formCompraPassagem extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbPoltrona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2))
+                    .addComponent(chkBagagem)
+                    .addComponent(chkMaiorQue))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtVlPassagem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)))
+                    .addComponent(btnComprar)
+                    .addComponent(btnCancelar)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -141,6 +183,64 @@ public class formCompraPassagem extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void chkBagagemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkBagagemMouseClicked
+        //Valor da Bagagem = 50
+        //Atualiza o valor do campo valor passagem
+        if(!chkBagagem.isSelected()){
+            chkMaiorQue.setEnabled(false);
+            chkMaiorQue.setSelected(false);
+            txtVlPassagem.setText(String.valueOf(voo.getVlVoo()));
+        }else{
+            chkMaiorQue.setEnabled(true);
+            txtVlPassagem.setText(String.valueOf(voo.getVlVoo() + 50));
+        }
+        
+    }//GEN-LAST:event_chkBagagemMouseClicked
+
+    private void chkMaiorQueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMaiorQueActionPerformed
+        // Valor da Bagagem = 50 + 30 * 5,23 acima de 30 KG
+        //Atualiza o valor do campo valor passagem
+        if(chkMaiorQue.isSelected()){
+            txtVlPassagem.setText(String.valueOf(voo.getVlVoo() + 50 + (30 * 5.23)));
+        }else{
+            txtVlPassagem.setText(String.valueOf(voo.getVlVoo() + 50));
+        }
+    }//GEN-LAST:event_chkMaiorQueActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
+        try {
+                          
+            Passagem passagem = new Passagem(GerarDados.gerarLocalizador(voo.getVooTag()).toUpperCase());
+            VooPoltrona poltrona = new VooPoltrona();
+            passagem.setCpfPassageiro(FormUtils.cliente);
+            passagem.setPassBagagem(Integer.parseInt(txtVlPassagem.getText()));
+            
+            try {
+                Facade.getInstance().insertDataDB("insert", passagem);
+                JOptionPane.showMessageDialog(this, "Seu localizador é: " + passagem.getPassLocalizador().toUpperCase(), "Aviso",JOptionPane.INFORMATION_MESSAGE);
+            } catch (HeadlessException e) {
+                System.out.println(e.getMessage());
+            }
+            
+            try{
+                poltrona.setLocalizador(passagem);
+                poltrona.setStatus(new Status(2));
+                poltrona.setVooTag(voo);
+                poltrona.setPoltrona(Integer.parseInt(cmbPoltrona.getSelectedItem().toString()));
+                Facade.getInstance().insertDataDB("insert", poltrona);
+            }catch (Exception ex){
+                System.out.println(ex.getMessage());
+            }
+            
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(formCompraPassagem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnComprarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,16 +279,16 @@ public class formCompraPassagem extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnComprar;
+    private javax.swing.JCheckBox chkBagagem;
+    private javax.swing.JCheckBox chkMaiorQue;
     private javax.swing.JComboBox<String> cmbPoltrona;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtVlPassagem;
     // End of variables declaration//GEN-END:variables
 }

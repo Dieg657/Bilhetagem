@@ -77,6 +77,7 @@ public final class InsertDAO extends DAO{
             " ? ,\n" +
             " ? ,\n" +
             " ? )";
+    
     private static final String insertFuncionarioLogin = "INSERT INTO `aviao`.`tb_usuario_func`\n" +
             "(`cpf_func`,\n" +
             "`usuario`,\n" +
@@ -207,6 +208,12 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(14, cliente.getObsCli());
     }
     
+    private static void setClienteLogin(UsuarioCliente usuario, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setString(1, usuario.getCpfCli());
+        preparaSQL.setString(2, "");
+        preparaSQL.setString(3, "12345");
+    }
+    
     private static void setEmpresa(Empresa empresa, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1,empresa.getFantasiaEmp());
         preparaSQL.setString(2,empresa.getInestEmp());
@@ -229,6 +236,12 @@ public final class InsertDAO extends DAO{
         preparaSQL.setInt(5, funcionario.getIdsexoFunc());
         preparaSQL.setString(6, funcionario.getObsFunc());
         preparaSQL.setString(7, funcionario.getCnpjEmp().getCnpj());
+    }
+    
+    private static void setUsuarioFuncionario(UsuarioFuncionario usuario, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setString(1, usuario.getCpfFunc());
+        preparaSQL.setString(2, "");
+        preparaSQL.setString(3, "12345");
     }
     
     private static void setPassagem(Passagem passagem, PreparedStatement preparaSQL) throws SQLException{
@@ -283,6 +296,38 @@ public final class InsertDAO extends DAO{
             closeAll();
         }
     }
+    
+    void gravaUsuarioCliente(UsuarioCliente usuario) throws SQLException{
+        PreparedStatement preparaSQL;
+         try {
+            
+             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertClienteLogin());
+             setClienteLogin(usuario, preparaSQL);
+             int executeUpdate = preparaSQL.executeUpdate();
+             if(executeUpdate == 1)
+                  System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+    
+    void gravaUsuarioFuncionario(UsuarioFuncionario usuario) throws SQLException{
+        PreparedStatement preparaSQL;
+         try {
+             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertFuncionarioLogin());
+             setUsuarioFuncionario(usuario, preparaSQL);
+             int executeUpdate = preparaSQL.executeUpdate();
+             if(executeUpdate == 1)
+                  System.out.println("Inseriu no banco de dados!");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel inserir no banco de dados");
+        }finally{
+            closeAll();
+        }
+    }
+    
     void gravaVoo(Voo voo) throws SQLException{
         PreparedStatement preparaSQL;
         ResultSet resultadoSQL;
@@ -383,6 +428,11 @@ public final class InsertDAO extends DAO{
             }
              case "DAO.ClassesDB.Passagem":{
                 System.out.println("É a classe: " + obj.getClass().getName());
+                 try {
+                     gravaPassagem((Passagem) obj);
+                 } catch (SQLException ex) {
+                     Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                 }
                 break;
             }
             case "DAO.ClassesDB.Empresa":{
@@ -396,10 +446,20 @@ public final class InsertDAO extends DAO{
             }
             case "DAO.ClassesDB.UsuarioCliente":{
                 System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    gravaUsuarioCliente((UsuarioCliente) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             }
             case "DAO.ClassesDB.UsuarioFuncionario":{
                 System.out.println("É a classe: " + obj.getClass().getName());
+                 try {
+                    gravaUsuarioFuncionario((UsuarioFuncionario) obj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             }
             default:{

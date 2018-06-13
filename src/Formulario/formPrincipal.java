@@ -5,17 +5,32 @@
  */
 package Formulario;
 
+import DAO.ClassesDB.Empresa;
+import DAO.SelectDAO;
+import Utilidades.FormUtils;
+import Utilidades.GerarDados;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author diego
  */
 public class formPrincipal extends javax.swing.JFrame {
-
+    private SelectDAO slctDAO;
     /**
      * Creates new form formPrincipal
      */
     public formPrincipal() {
         initComponents();
+        
+        if(FormUtils.isFuncionario()){
+            painelGeral.remove(paneEmpregado);
+        }else{
+            painelGeral.remove(paneCliente);
+        }
     }
 
     /**
@@ -27,34 +42,30 @@ public class formPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        painelGeral = new javax.swing.JTabbedPane();
+        paneEmpregado = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        paneCliente = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        panePassagem = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jButton1.setText("Empresa");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Cliente");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("EditPoltrona");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
 
         jButton4.setText("Funcionario");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -63,6 +74,78 @@ public class formPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("Gerar Dados");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Empresa");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout paneEmpregadoLayout = new javax.swing.GroupLayout(paneEmpregado);
+        paneEmpregado.setLayout(paneEmpregadoLayout);
+        paneEmpregadoLayout.setHorizontalGroup(
+            paneEmpregadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneEmpregadoLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(paneEmpregadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4)
+                    .addComponent(jButton1))
+                .addContainerGap(264, Short.MAX_VALUE))
+        );
+        paneEmpregadoLayout.setVerticalGroup(
+            paneEmpregadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneEmpregadoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton3)
+                .addContainerGap(138, Short.MAX_VALUE))
+        );
+
+        painelGeral.addTab("Empregado", paneEmpregado);
+
+        jButton2.setText("Cliente");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Cadastrar");
+
+        javax.swing.GroupLayout paneClienteLayout = new javax.swing.GroupLayout(paneCliente);
+        paneCliente.setLayout(paneClienteLayout);
+        paneClienteLayout.setHorizontalGroup(
+            paneClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneClienteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(paneClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2)
+                    .addComponent(jButton7))
+                .addContainerGap(286, Short.MAX_VALUE))
+        );
+        paneClienteLayout.setVerticalGroup(
+            paneClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneClienteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton7)
+                .addContainerGap(175, Short.MAX_VALUE))
+        );
+
+        painelGeral.addTab("Cliente", paneCliente);
+
         jButton5.setText("Passagem");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,38 +153,40 @@ public class formPrincipal extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout panePassagemLayout = new javax.swing.GroupLayout(panePassagem);
+        panePassagem.setLayout(panePassagemLayout);
+        panePassagemLayout.setHorizontalGroup(
+            panePassagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panePassagemLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton5)
+                .addContainerGap(284, Short.MAX_VALUE))
+        );
+        panePassagemLayout.setVerticalGroup(
+            panePassagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panePassagemLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton5)
+                .addContainerGap(212, Short.MAX_VALUE))
+        );
+
+        painelGeral.addTab("Passagem", panePassagem);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton5))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3)))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(painelGeral)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(62, 62, 62)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5))
-                .addContainerGap(170, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(painelGeral)
+                .addContainerGap())
         );
 
         pack();
@@ -113,10 +198,21 @@ public class formPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        //this.setVisible(false);
-        formEditPoltrona poltrona = new formEditPoltrona(null,0);
-        poltrona.setVisible(true);
-        //this.dispose();
+        try {
+            GerarDados.gerarCliente();
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(formPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            GerarDados.geraVoos();
+        } catch (Exception ex) {
+            Logger.getLogger(formPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            GerarDados.gerarPassagens();
+        } catch (Exception ex) {
+            Logger.getLogger(formPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -125,7 +221,14 @@ public class formPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        formFuncionario funcionario = new formFuncionario("01222333000123");
+        slctDAO = new SelectDAO();
+        Empresa empresa = new Empresa();
+        try {
+            empresa = slctDAO.getEmpresaCNPJ(FormUtils.cpf);
+        } catch (SQLException ex) {
+            Logger.getLogger(formPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        formFuncionario funcionario = new formFuncionario(empresa.getCnpj());
         funcionario.setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -175,5 +278,11 @@ public class formPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTabbedPane painelGeral;
+    private javax.swing.JPanel paneCliente;
+    private javax.swing.JPanel paneEmpregado;
+    private javax.swing.JPanel panePassagem;
     // End of variables declaration//GEN-END:variables
 }
