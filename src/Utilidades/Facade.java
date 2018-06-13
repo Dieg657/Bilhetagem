@@ -7,6 +7,7 @@ package Utilidades;
 
 import DAO.DAO;
 import DAO.FactoryDAO;
+import DAO.SelectDAO;
 
 /**
  *
@@ -14,8 +15,8 @@ import DAO.FactoryDAO;
  */
 public final class Facade {
     private static Facade singleton;
-    private DAO objDAO;
-    private FactoryDAO factoryDAO;
+    private static DAO objDAO;
+    private static FactoryDAO factoryDAO;
     
     public void insertDataDB(String operacao, Object obj){
         try {
@@ -35,6 +36,22 @@ public final class Facade {
         } catch (Exception ex) {
             System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados!");
         }
+    }
+    
+    /**
+     *
+     * @param operacao
+     * @return
+     */
+    public static SelectDAO selectDataDB(String operacao){
+        try {
+            factoryDAO = new FactoryDAO();
+            objDAO = factoryDAO.getDAO(operacao.toLowerCase());
+            return (SelectDAO) objDAO;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage() + "\nNão foi possivel atualizar no banco de dados!");
+        }
+        return null;
     }
     
     public static synchronized Facade getInstance(){

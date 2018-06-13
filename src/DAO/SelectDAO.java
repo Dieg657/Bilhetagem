@@ -13,7 +13,6 @@ import DAO.ClassesDB.Passagem;
 import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
-import static DAO.DAO.preparaSQL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,8 +33,10 @@ public final class SelectDAO extends DAO{
     }
     
     //Status
-    private static final String selectStatus = "SELECT * FROM aviao.tb_status";
-    
+    private static final String selectStatus = "SELECT `tb_status`.`id_status`,\n" +
+                                                "    `tb_status`.`status`\n" +
+                                                "FROM `aviao`.`tb_status`";
+        
     //Cliente
     private static final String selectCliente = "SELECT `tb_cliente`.`nm_cli`,\n" +
         "    `tb_cliente`.`doc_cli`,\n" +
@@ -100,7 +101,7 @@ public final class SelectDAO extends DAO{
         "    `tb_empresa`.`inest_emp`,\n" +
         "    `tb_empresa`.`cnpj`,\n" +
         "    `tb_empresa`.`end_emp`,\n" +
-        "    `tb_empresa`.`num_empresa`,\n" +
+        "    `tb_empresa`.`num_emp`,\n" +
         "    `tb_empresa`.`compl_emp`,\n" +
         "    `tb_empresa`.`cidade_emp`,\n" +
         "    `tb_empresa`.`idest_emp`,\n" +
@@ -112,24 +113,31 @@ public final class SelectDAO extends DAO{
     
     
     // <editor-fold defaultstate="collapsed" desc="Prepara parametros"> 
-    private static void setVoo(Voo voo) throws SQLException{
+    private static void setVoo(Voo voo, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, voo.getOrigem());
         preparaSQL.setString(2, voo.getDestino());
         preparaSQL.setDate(3, new java.sql.Date(voo.getDtPartida().getTime()));
     }
     
-    private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
+    private static void setVooPoltrona(VooPoltrona poltrona, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
     }
+    
+    private static void setStatus(Status status, PreparedStatement preparaSQL) throws SQLException{
+        preparaSQL.setInt(1, status.getIdStatus());
+    }
+    
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Consultas com Parametros"> 
     public List<Voo> getVooComParametros(Voo voo){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
         try {
             List<Voo> lstVoo = new ArrayList<>();
             preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVoo() + "WHERE (`tb_voo`.`origem` = ? AND `tb_voo`.`destino`= ? ) \n"+
                     "OR `tb_voo`.`dt_partida` = ? ");
-            setVoo(voo);
+            setVoo(voo, preparaSQL);
             resultadoSQL = preparaSQL.executeQuery();
             while (resultadoSQL.next()) {
                 lstVoo.add(getVoo(resultadoSQL));
@@ -144,10 +152,12 @@ public final class SelectDAO extends DAO{
     }
     
     public List<VooPoltrona> getVooPoltronaParametros(VooPoltrona poltrona){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
         try {
             List<VooPoltrona> lstPoltrona = new ArrayList<>();
             preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectVooPoltrona()+ "WHERE `tb_voo_poltrona`.`voo_tag` = ? ");
-            setVooPoltrona(poltrona);
+            setVooPoltrona(poltrona, preparaSQL);
             resultadoSQL = preparaSQL.executeQuery();
             while (resultadoSQL.next()) {
                 lstPoltrona.add(getVooPoltrona(resultadoSQL));
@@ -160,9 +170,48 @@ public final class SelectDAO extends DAO{
         }
         return null;
     }
+    
+    public Status getStatusParametros(Status status){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            Status resultStatus = new Status();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectStatus() + " WHERE `tb_status`.`id_status` = ?");
+            setStatus(status, preparaSQL);
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                resultStatus = getStatus(resultadoSQL);
+            }
+            return resultStatus;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
+    
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Consultas sem Parametros"> 
+    public List<Empresa> getEmpresas() throws SQLException{
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
+        try {
+            List<Empresa> lstEmpresa = new ArrayList<>();
+            preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectEmpresa());
+            resultadoSQL = preparaSQL.executeQuery();
+            while (resultadoSQL.next()) {
+                lstEmpresa.add(getEmpresa(resultadoSQL));
+            }
+            return lstEmpresa;
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectDAO.class.getName()).log(Level.SEVERE, "Não foi possível executar a instrução no Banco de Dados", ex);
+        }finally{
+            closeAll();
+        }
+        return null;
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Getters"> 
@@ -263,7 +312,7 @@ public final class SelectDAO extends DAO{
     private Empresa getEmpresa (ResultSet rs) throws SQLException{
         empresa = new Empresa();
         estado = new Estado();
-        empresa.setFantasiaEmp(rs.getString("fansisa_emp"));
+        empresa.setFantasiaEmp(rs.getString("fantasia_emp"));
         empresa.setInestEmp(rs.getString("inest_emp"));
         empresa.setCnpj(rs.getString("cnpj"));
         empresa.setEndEmp(rs.getString("end_emp"));
@@ -327,7 +376,7 @@ public final class SelectDAO extends DAO{
         voo.setDestino(rs.getString("destino"));  
         voo.setDtPartida(rs.getDate("dt_partida"));
         voo.setHrPartida(rs.getTime("hr_partida"));
-        voo.setCpnjEmp(new Empresa(rs.getString("cpnj_emp")));
+        voo.setCpnjEmp(new Empresa(rs.getString("cnpj_emp")));
         voo.setVlVoo(rs.getLong("vl_voo"));
 
         return voo;
@@ -340,9 +389,12 @@ public final class SelectDAO extends DAO{
         passagem = new Passagem();
         
         poltrona.setIdtbVooPoltrona(rs.getInt("idtb_voo_poltrona"));
-        voo.setVooTag(rs.getString("voo_tag")); poltrona.setVooTag(voo);
-        passagem.setPassLocalizador(rs.getString("localizador")) ;poltrona.setLocalizador(passagem);
-        statusPoltrona.setIdStatus(rs.getInt("status")); poltrona.setStatus(statusPoltrona);
+        voo.setVooTag(rs.getString("voo_tag"));  poltrona.setVooTag(voo);
+        poltrona.setPoltrona(rs.getInt("poltrona"));
+        passagem.setPassLocalizador(rs.getString("localizador")); poltrona.setLocalizador(passagem);
+        statusPoltrona.setIdStatus(rs.getInt("status"));
+        statusPoltrona = getStatusParametros(statusPoltrona);
+        poltrona.setStatus(statusPoltrona);
         
         return poltrona;
     }
@@ -350,6 +402,8 @@ public final class SelectDAO extends DAO{
     
     // <editor-fold defaultstate="collapsed" desc="Dados para cmbEstado e cmbUF"> 
     public List<Estado> getEstadoAll(){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
         try {
             List<Estado> lstEstado = new ArrayList<>();
             preparaSQL = (PreparedStatement) SQLConnect.getInstance().prepareStatement(getSelectEstado());
@@ -367,6 +421,8 @@ public final class SelectDAO extends DAO{
     }
     
     public List<Status> getStatusAll(){
+        PreparedStatement preparaSQL;    
+        ResultSet resultadoSQL;
         try {
             List<Status> lstStatus = new ArrayList<>();
             preparaSQL = SQLConnect.getInstance().prepareStatement(getSelectStatus());

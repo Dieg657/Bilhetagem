@@ -48,7 +48,7 @@ public class VooPoltrona implements Serializable {
     @JoinColumn(name = "voo_tag", referencedColumnName = "voo_tag")
     @ManyToOne(optional = false)
     private Voo vooTag;
-
+    
     public VooPoltrona() {
     }
 

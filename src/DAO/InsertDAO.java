@@ -7,6 +7,8 @@ package DAO;
 
 import DAO.ClassesDB.*;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.logging.Level;
@@ -94,10 +96,7 @@ public final class InsertDAO extends DAO{
         Campos obrigatórios: `voo_tag`, quantidade de poltronas da aeronave
     */
     private static final String insertVooPoltrona = "call criaVooPoltrona( ? , ?)";
-    /*
-        Campos obrigatórios: voo_tag, poltrona, localizador
-    */
-    
+
     
     //Passagem
     private static final String insertPassagem = "INSERT INTO `aviao`.`tb_passagem`\n" +
@@ -115,7 +114,7 @@ public final class InsertDAO extends DAO{
             "`inest_emp`,\n" +
             "`cnpj`,\n" +
             "`end_emp`,\n" +
-            "`num_empresa`,\n" +
+            "`num_emp`,\n" +
             "`compl_emp`,\n" +
             "`cidade_emp`,\n" +
             "`idest_emp`,\n" +
@@ -191,7 +190,7 @@ public final class InsertDAO extends DAO{
         return insertEmpresa;
     }
     
-    private static void setCliente(Cliente cliente) throws SQLException{
+    private static void setCliente(Cliente cliente, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, cliente.getNmCli());
         preparaSQL.setString(2, cliente.getDocCli());
         preparaSQL.setString(3, cliente.getOrgCli());
@@ -208,7 +207,7 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(14, cliente.getObsCli());
     }
     
-    private static void setEmpresa(Empresa empresa) throws SQLException{
+    private static void setEmpresa(Empresa empresa, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1,empresa.getFantasiaEmp());
         preparaSQL.setString(2,empresa.getInestEmp());
         preparaSQL.setString(3,empresa.getCnpj());
@@ -222,7 +221,7 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(11,empresa.getObsEmp());
     }
     
-    private static void setFuncionario(Funcionario funcionario) throws SQLException{
+    private static void setFuncionario(Funcionario funcionario, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, funcionario.getNmFunc());
         preparaSQL.setString(2, funcionario.getCpfFunc());
         preparaSQL.setString(3, funcionario.getTelFunc());
@@ -232,18 +231,18 @@ public final class InsertDAO extends DAO{
         preparaSQL.setString(7, funcionario.getCnpjEmp().getCnpj());
     }
     
-    private static void setPassagem(Passagem passagem) throws SQLException{
+    private static void setPassagem(Passagem passagem, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, passagem.getCpfPassageiro().getCpfCli());
         preparaSQL.setInt(2, passagem.getPassBagagem());
         preparaSQL.setString(3, passagem.getPassLocalizador());
     }
     
-    private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
+    private static void setVooPoltrona(VooPoltrona poltrona, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
         preparaSQL.setInt(2, poltrona.getPoltrona());
     }
     
-    private static void setVoo(Voo voo) throws SQLException{
+    private static void setVoo(Voo voo, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, voo.getVooTag());
         preparaSQL.setString(2, voo.getOrigem());
         preparaSQL.setString(3, voo.getDestino());
@@ -254,10 +253,11 @@ public final class InsertDAO extends DAO{
     }
     
     void gravaCliente(Cliente cliente) throws SQLException{
-        
+        PreparedStatement preparaSQL;
+        ResultSet resultadoSQL;
         try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertCliente());
-            setCliente(cliente);
+            setCliente(cliente,preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Inseriu no banco de dados!");
@@ -270,9 +270,10 @@ public final class InsertDAO extends DAO{
     }
       
     void gravaFuncionario(Funcionario funcionario) throws SQLException{
+        PreparedStatement preparaSQL;
          try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertFuncionario());
-            setFuncionario(funcionario);
+            setFuncionario(funcionario, preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Inseriu no banco de dados!");
@@ -283,9 +284,11 @@ public final class InsertDAO extends DAO{
         }
     }
     void gravaVoo(Voo voo) throws SQLException{
+        PreparedStatement preparaSQL;
+        ResultSet resultadoSQL;
          try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertVoo());
-            setVoo(voo);
+            setVoo(voo, preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Inseriu no banco de dados!");
@@ -296,9 +299,10 @@ public final class InsertDAO extends DAO{
         }
     }
     void gravaVooPoltrona(VooPoltrona poltrona) throws SQLException{
-         try {
+        PreparedStatement preparaSQL;
+        try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertVooPoltrona());
-            setVooPoltrona(poltrona);
+            setVooPoltrona(poltrona, preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Inseriu no banco de dados!");
@@ -310,9 +314,10 @@ public final class InsertDAO extends DAO{
     }
     
     void gravaPassagem(Passagem passagem) throws SQLException{
+        PreparedStatement preparaSQL;    
          try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertPassagem());
-            setPassagem(passagem);
+            setPassagem(passagem, preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Inseriu no banco de dados!");
@@ -324,9 +329,10 @@ public final class InsertDAO extends DAO{
     }
     
     void gravaEmpresa(Empresa empresa) throws SQLException{
+        PreparedStatement preparaSQL;    
          try {
             preparaSQL = SQLConnect.getInstance().prepareStatement(getInsertEmpresa());
-            setEmpresa(empresa);
+            setEmpresa(empresa, preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Inseriu no banco de dados!");
@@ -360,6 +366,15 @@ public final class InsertDAO extends DAO{
             }
             case "DAO.ClassesDB.Voo":{
                 System.out.println("É a classe: " + obj.getClass().getName());
+                try {
+                    gravaVoo((Voo) obj);
+                    VooPoltrona vooPoltrona = new VooPoltrona();
+                    vooPoltrona.setVooTag((Voo) obj);
+                    vooPoltrona.setPoltrona(60);
+                    gravaVooPoltrona(vooPoltrona);
+                } catch (SQLException ex) {
+                    Logger.getLogger(InsertDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             }
             case "DAO.ClassesDB.VooPoltrona":{

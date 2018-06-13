@@ -11,7 +11,7 @@ import DAO.ClassesDB.Funcionario;
 import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
-import static DAO.DAO.preparaSQL;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -63,7 +63,7 @@ public final class UpdateDAO extends DAO {
             "`inest_emp` = ? ,\n" +
             "`cnpj` = ? ,\n" +
             "`end_emp` = ? ,\n" +
-            "`num_empresa` = ? ,\n" +
+            "`num_emp` = ? ,\n" +
             "`compl_emp` = ? ,\n" +
             "`cidade_emp` = ? ,\n" +
             "`idest_emp` = ? ,\n" +
@@ -85,12 +85,7 @@ public final class UpdateDAO extends DAO {
     private String getUpdateCliente() {
         return updateCliente;
     }
-    /**
-     * @return the updateClienteLogin
-     */
-    private String getUpdateClienteLogin() {
-        return updateClienteLogin;
-    }
+    
     /**
      * @return the updateFuncionario
      */
@@ -104,7 +99,7 @@ public final class UpdateDAO extends DAO {
         return updateEmpresa;
     }
      
-    private static void setCliente(Cliente cliente) throws SQLException{
+    private static void setCliente(Cliente cliente, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, cliente.getNmCli());
         preparaSQL.setString(2, cliente.getDocCli());
         preparaSQL.setString(3, cliente.getOrgCli());
@@ -120,7 +115,7 @@ public final class UpdateDAO extends DAO {
         preparaSQL.setString(13, cliente.getObsCli());
         preparaSQL.setString(14, cliente.getCpfCli());
     }
-    private static void setFuncionario(Funcionario funcionario) throws SQLException{
+    private static void setFuncionario(Funcionario funcionario, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, funcionario.getNmFunc());
         preparaSQL.setString(2, funcionario.getCpfFunc());
         preparaSQL.setString(3, funcionario.getTelFunc());
@@ -129,15 +124,15 @@ public final class UpdateDAO extends DAO {
         preparaSQL.setString(6, funcionario.getObsFunc());
         preparaSQL.setString(7, funcionario.getCnpjEmp().getCnpj());
     }
-    private static void setVooTag(String vooTag) throws SQLException{
+    private static void setVooTag(String vooTag, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, vooTag);
     }
-    private static void setVooPoltrona(VooPoltrona poltrona) throws SQLException{
+    private static void setVooPoltrona(VooPoltrona poltrona, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1, poltrona.getVooTag().getVooTag());
         preparaSQL.setInt(2, poltrona.getPoltrona());
         preparaSQL.setString(3, poltrona.getLocalizador().getPassLocalizador());
     }
-    private static void setEmpresa(Empresa empresa) throws SQLException{
+    private static void setEmpresa(Empresa empresa, PreparedStatement preparaSQL) throws SQLException{
         preparaSQL.setString(1,empresa.getFantasiaEmp());
         preparaSQL.setString(2,empresa.getInestEmp());
         preparaSQL.setString(3,empresa.getCnpj());
@@ -157,9 +152,11 @@ public final class UpdateDAO extends DAO {
     }    
     VooPoltrona moveParaAProximaPoltrona(VooPoltrona poltrona) throws SQLException{
         try {
+            PreparedStatement preparaSQL;
+            ResultSet resultadoSQL;
             VooPoltrona novaPoltrona = new VooPoltrona();
             preparaSQL = SQLConnect.getInstance().prepareStatement(selectPoltronaLivre);
-            setVooTag(poltrona.getVooTag().getVooTag());
+            setVooTag(poltrona.getVooTag().getVooTag(), preparaSQL);
             resultadoSQL = preparaSQL.executeQuery();
             if(resultadoSQL.getRow() > 0){
                 poltrona = getPoltronaLivre(resultadoSQL);
@@ -180,8 +177,9 @@ public final class UpdateDAO extends DAO {
     }
     void atualizaCliente(Cliente cliente) throws SQLException{
         try {
+            PreparedStatement preparaSQL;
             preparaSQL = SQLConnect.getInstance().prepareStatement(updateCliente);
-            setCliente(cliente);
+            setCliente(cliente, preparaSQL);
             int executeUpdate = preparaSQL.executeUpdate();
             if(executeUpdate == 1)
                 System.out.println("Atualizou no banco de dados!");
@@ -203,13 +201,14 @@ public final class UpdateDAO extends DAO {
         */
     }
     void atualizaStatusVooPoltrona(VooPoltrona poltrona, int op) throws SQLException{
+        PreparedStatement preparaSQL;
         /*
             Definindo a poltrona como Livre ou em Manutençao
         */
         if(op == 1){
             try {
                 preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaLivre);
-                setVooPoltrona(poltrona);
+                setVooPoltrona(poltrona, preparaSQL);
                 int executeUpdate = preparaSQL.executeUpdate();
                 if(executeUpdate == 1)
                     System.out.println("Atualizou no banco de dados!");
@@ -225,7 +224,7 @@ public final class UpdateDAO extends DAO {
                 nvPoltrona = moveParaAProximaPoltrona(poltrona);
                 
                 preparaSQL = SQLConnect.getInstance().prepareStatement(updateStatusPoltronaManutencao);
-                setVooPoltrona(poltrona);
+                setVooPoltrona(poltrona,preparaSQL);
                 int executeUpdate = preparaSQL.executeUpdate();
                 if(executeUpdate == 1)
                     System.out.println("Atualizou poltrona para Livre no banco de dados!");
@@ -237,7 +236,7 @@ public final class UpdateDAO extends DAO {
             
             try {
                 preparaSQL = SQLConnect.getInstance().prepareStatement(updateClienteVooPoltrona);
-                setVooPoltrona(nvPoltrona);
+                setVooPoltrona(nvPoltrona, preparaSQL);
                 int executeUpdate = preparaSQL.executeUpdate();
                 if(executeUpdate == 1)
                     System.out.println("Atualizou a poltrona para Ocupada no banco de dados!");

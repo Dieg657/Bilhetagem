@@ -5,20 +5,11 @@
  */
 package Formulario;
 
+import DAO.ClassesDB.VooPoltrona;
 import Utilidades.FormUtils;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
+import Utilidades.VooPoltronaTableModel;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+
 
 /**
  *
@@ -26,13 +17,22 @@ import javax.swing.JPanel;
  */
 public class formEditPoltrona extends javax.swing.JFrame {
     FormUtils objUForm;
+    VooPoltrona poltrona;
+    VooPoltronaTableModel tblModel;
     /**
      * Creates new form formEditPoltrona
+     * @param obj
      */
-    public formEditPoltrona() {
+    public formEditPoltrona(Object obj, int indiceLinha) {
         initComponents();
         objUForm = new FormUtils();
-        objUForm.carregaComboBoxStatus(jComboBox1);
+        objUForm.carregaComboBoxStatus(cmbStatus);
+        tblModel = (VooPoltronaTableModel) obj;
+        poltrona = tblModel.getVooPoltrona(indiceLinha);
+    }
+
+    private formEditPoltrona() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -45,11 +45,11 @@ public class formEditPoltrona extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        lbNumPoltrona = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        lbStatusPoltrona = new javax.swing.JLabel();
+        cmbStatus = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -58,11 +58,11 @@ public class formEditPoltrona extends javax.swing.JFrame {
 
         jPanel1.setLayout(null);
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("10");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(195, 20, 40, 40);
+        lbNumPoltrona.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        lbNumPoltrona.setForeground(new java.awt.Color(255, 255, 255));
+        lbNumPoltrona.setText("10");
+        jPanel1.add(lbNumPoltrona);
+        lbNumPoltrona.setBounds(195, 20, 40, 40);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon(getClass().getResource("/Formulario/images/chair.png")).getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH)));
         jPanel1.add(jLabel1);
@@ -72,13 +72,13 @@ public class formEditPoltrona extends javax.swing.JFrame {
         jPanel1.add(jLabel3);
         jLabel3.setBounds(300, 10, 60, 15);
 
-        jLabel4.setText("jLabel4");
-        jPanel1.add(jLabel4);
-        jLabel4.setBounds(360, 10, 49, 15);
+        lbStatusPoltrona.setText("jLabel4");
+        jPanel1.add(lbStatusPoltrona);
+        lbStatusPoltrona.setBounds(360, 10, 49, 15);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jComboBox1);
-        jComboBox1.setBounds(300, 60, 220, 24);
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel1.add(cmbStatus);
+        cmbStatus.setBounds(300, 60, 220, 24);
 
         jLabel5.setText("Status da Poltrona:");
         jPanel1.add(jLabel5);
@@ -147,15 +147,15 @@ public class formEditPoltrona extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cmbStatus;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lbNumPoltrona;
+    private javax.swing.JLabel lbStatusPoltrona;
     // End of variables declaration//GEN-END:variables
 }
 

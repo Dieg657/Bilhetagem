@@ -114,7 +114,7 @@ public class formPrincipal extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         //this.setVisible(false);
-        formEditPoltrona poltrona = new formEditPoltrona();
+        formEditPoltrona poltrona = new formEditPoltrona(null,0);
         poltrona.setVisible(true);
         //this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed

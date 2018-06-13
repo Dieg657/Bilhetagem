@@ -15,20 +15,21 @@ import javax.swing.table.AbstractTableModel;
  * @author diego
  */
 public class VooTableModel extends AbstractTableModel{
-    private List<Voo> linhas;
-    private String[] colunas = new String[] { "Voo", "Origem", "Destino", "Hora de Partida" };
+    private final List<Voo> linhas;
+    private final String[] colunas = new String[] { "Voo", "Origem", "Destino", "Hora de Partida", "Preço" };
     private static final int VOO = 0;
     private static final int ORIGEM = 1;
     private static final int DESTINO = 2;
     private static final int HORA = 3;
+    private static final int PRECO = 4;
     
     public VooTableModel() {
-        linhas = new ArrayList<Voo>();
+        linhas = new ArrayList<>();
     }
  
     // Cria um VooTableModel contendo a lista recebida por parâmetro
     public VooTableModel(List<Voo> listaDeVoos) {
-        linhas = new ArrayList<Voo>(listaDeVoos);
+        linhas = new ArrayList<>(listaDeVoos);
     }
     @Override
     public int getRowCount() {
@@ -56,6 +57,8 @@ public class VooTableModel extends AbstractTableModel{
             return Voo.class;
         case HORA:
             return Voo.class;
+        case PRECO:
+            return Voo.class;
         default:
             throw new IndexOutOfBoundsException("columnIndex out of bounds");
         }
@@ -80,6 +83,8 @@ public class VooTableModel extends AbstractTableModel{
             return voo.getDestino();
         case HORA:
             return voo.getHrPartida();
+        case PRECO:
+            return voo.getVlVoo();
         default:
             // Não deve ocorrer, pois só existem 2 colunas
             throw new IndexOutOfBoundsException("columnIndex out of bounds");
@@ -104,6 +109,8 @@ public class VooTableModel extends AbstractTableModel{
             case HORA:
                 voo.setHrPartida((Date) aValue);
                 break;
+            case PRECO:
+                voo.setVlVoo((Integer) aValue);
             default:
                 // Não deve ocorrer, pois só existem 2 colunas
                 throw new IndexOutOfBoundsException("columnIndex out of bounds");

@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_empresa` (
   `inest_emp` VARCHAR(45) NULL,
   `cnpj` VARCHAR(20) NOT NULL,
   `end_emp` VARCHAR(200) NULL,
-  `num_empresa` VARCHAR(45) NULL,
+  `num_emp` VARCHAR(45) NULL,
   `compl_emp` VARCHAR(45) NULL,
   `bairro_emp` VARCHAR(45) NULL,
   `cidade_emp` VARCHAR(45) NULL,
@@ -219,6 +219,78 @@ CREATE TABLE IF NOT EXISTS `aviao`.`tb_usuario_cli` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+USE `aviao` ;
+
+-- -----------------------------------------------------
+-- procedure criaVooPoltrona
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `aviao`$$
+CREATE PROCEDURE `criaVooPoltrona` (idVoo varchar(20), poltronas int)
+BEGIN
+	DECLARE numPoltrona INT;
+    SET numPoltrona = 1;
+    
+    WHILE numPoltrona <= poltronas DO
+    INSERT INTO `aviao`.`tb_voo_poltrona` (`voo_tag`,`poltrona`,`localizador`,`status`) VALUES (idVoo, numPoltrona, null, 1);
+	SET numPoltrona = numPoltrona + 1;
+    END WHILE;
+END;$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure criaVoo
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `aviao`$$
+CREATE PROCEDURE `criaVoo` (idVoo varchar(20), origem varchar(20), destino varchar(20), dataPartida date, horaPartida time(0), cnpj varchar(20), vlVoo decimal)
+BEGIN
+    INSERT INTO `aviao`.`tb_voo` (`voo_tag`,`origem`, `destino`, `dt_partida`, `hr_partida`,`cnpj_emp`, `vl_voo`) VALUES (idVoo, origem, destino, dataPartida, horaPartida, cnpj, vlVoo);
+END;$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure updateCliPoltrona
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `aviao`$$
+CREATE PROCEDURE `updateCliPoltrona` (idVoo varchar(20), numPoltrona int, localizador varchar(20))
+BEGIN
+	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = localizador,`status` = 2 WHERE `voo_tag` = idVoo AND `poltrona` = numPoltrona;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure updateStatusPoltronaManutencao
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `aviao`$$
+CREATE PROCEDURE `updateStatusPoltronaManutencao` (idVoo varchar(20), numPoltrona int, localizador varchar(20))
+BEGIN
+	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = null , `status` = 3 WHERE `voo_tag` = idVoo AND `poltrona` = numPoltrona AND `localizador` = localizador;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure updateStatusPoltronaLivre
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `aviao`$$
+CREATE PROCEDURE `updateStatusPoltronaLivre` (idVoo varchar(20), numPoltrona int, localizador varchar(20))
+BEGIN
+	UPDATE `aviao`.`tb_voo_poltrona` SET `localizador` = null , `status` = 1 WHERE `voo_tag` = idVoo AND `poltrona` = numPoltrona AND `localizador` = localizador;
+END$$
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -233,35 +305,36 @@ USE `aviao`;
 
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (1, 'Livre');
 INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (2, 'Ocupada');
-INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (3, 'Manutenção');
+INSERT INTO `aviao`.`tb_status` (`id_status`, `status`) VALUES (3, 'ManutenÃ§Ã£o');
 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Acre','AC');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Alagoas','AL'); 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amapá','AP');
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('AmapÃ¡','AP');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Amazonas','AM');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Bahia','BA');
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Ceará','CE'); 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('CearÃ¡','CE'); 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Distrito Federal','DF');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Espírito Santo','ES');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Goiás','GO');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Maranhão','MA');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('EspÃ­rito Santo','ES');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('GoiÃ¡s','GO');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('MaranhÃ£o','MA');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Mato Grosso','MT');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Mato Grosso do Sul','MS');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Minas Gerais','MG');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Pará','PA');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Paraíba','PB');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Paraná','PR');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('ParÃ¡','PA');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('ParaÃ­ba','PB');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('ParanÃ¡','PR');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Pernambuco','PE');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Piauí','PI');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('PiauÃ­','PI');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio de Janeiro','RJ');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio Grande do Norte','RN');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rio Grande do Sul','RS');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Rondônia','RO');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('RondÃ´nia','RO');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Roraima','RR');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Santa Catarina','SC');	 
-INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('São Paulo','SP');	 
+INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('SÃ£o Paulo','SP');	 
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Sergipe','SE');
 INSERT INTO `aviao`.`tb_estado` (`estado`,`uf`) VALUES  ('Tocantins', 'TO');
 
 
 COMMIT;
+

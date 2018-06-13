@@ -5,19 +5,26 @@
  */
 package Formulario;
 
+import DAO.ClassesDB.Voo;
 import Utilidades.FormUtils;
 import Utilidades.GerarCidades;
+import java.awt.event.ItemEvent;
+import javax.swing.JComboBox;
 /**
  *
  * @author diego
  */
 public class formPassagem extends javax.swing.JFrame {
-
+    private FormUtils formUtils;
     /**
      * Creates new form Passagem
      */
     public formPassagem() {
         initComponents();
+        formUtils = new FormUtils();
+        formUtils.carregaCidades(cmbOrigem);
+        formUtils.carregaCidades(cmbDestino);
+        formUtils.carregaDataAtual(dtVoo);
     }
 
     /**
@@ -48,11 +55,38 @@ public class formPassagem extends javax.swing.JFrame {
         jLabel1.setText("Origem:");
 
         cmbOrigem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Brasilia" }));
+        cmbOrigem.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                cmbOrigemPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
 
         jLabel2.setText("Destino:");
 
         cmbDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Goiania" }));
+        cmbDestino.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                cmbDestinoPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
 
+        dtVoo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                dtVooPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
         dtVoo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dtVooActionPerformed(evt);
@@ -63,8 +97,7 @@ public class formPassagem extends javax.swing.JFrame {
 
         jLabel4.setText("Voos:");
 
-        tblVoos.setCellSelectionEnabled(false);
-        tblVoos.setRowSelectionAllowed(true);
+        tblVoos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         jScrollPane2.setViewportView(tblVoos);
         tblVoos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -94,7 +127,7 @@ public class formPassagem extends javax.swing.JFrame {
                         .addComponent(btnCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnProsseguir))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -168,9 +201,26 @@ public class formPassagem extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnProsseguirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProsseguirActionPerformed
-        FormUtils obj = new FormUtils();
-        obj.carregaListaVoos(tblVoos, cmbOrigem.getSelectedItem().toString(), cmbDestino.getSelectedItem().toString(), dtVoo);
+        if(FormUtils.isFuncionario()){
+            System.out.println("É funcionario!");
+            formVoo formPoltronas = new formVoo(tblVoos.getValueAt(tblVoos.getSelectedRow(), 0));
+            formPoltronas.setVisible(true);
+        }else{
+            System.out.println("Não é funcionario!");
+        }
     }//GEN-LAST:event_btnProsseguirActionPerformed
+
+    private void cmbDestinoPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cmbDestinoPopupMenuWillBecomeInvisible
+        formUtils.carregaListaVoos(tblVoos, cmbOrigem.getSelectedItem().toString(), cmbDestino.getSelectedItem().toString(), dtVoo);
+    }//GEN-LAST:event_cmbDestinoPopupMenuWillBecomeInvisible
+
+    private void cmbOrigemPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_cmbOrigemPopupMenuWillBecomeInvisible
+        formUtils.carregaListaVoos(tblVoos, cmbOrigem.getSelectedItem().toString(), cmbDestino.getSelectedItem().toString(), dtVoo);
+    }//GEN-LAST:event_cmbOrigemPopupMenuWillBecomeInvisible
+
+    private void dtVooPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_dtVooPopupMenuWillBecomeInvisible
+        formUtils.carregaListaVoos(tblVoos, cmbOrigem.getSelectedItem().toString(), cmbDestino.getSelectedItem().toString(), dtVoo);
+    }//GEN-LAST:event_dtVooPopupMenuWillBecomeInvisible
 
     /**
      * @param args the command line arguments

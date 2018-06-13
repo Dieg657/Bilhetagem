@@ -10,6 +10,8 @@ import DAO.ClassesDB.Status;
 import DAO.ClassesDB.Voo;
 import DAO.ClassesDB.VooPoltrona;
 import DAO.SelectDAO;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -21,9 +23,15 @@ import org.jdesktop.swingx.JXDatePicker;
  */
 public class FormUtils{
     private SelectDAO slctDAO;
-    private VooTableModel model;
+    private VooTableModel modelVoo;
+    private VooPoltronaTableModel modelPoltrona;
     private Voo voo;
+    private VooPoltrona poltrona;
+    private static boolean isFuncionario = false; 
    
+    public void carregaDataAtual(JXDatePicker datePicker){
+        datePicker.setDate(Date.from(Instant.now()));
+    }
     public void carregaComboBoxEstado(JComboBox cmb){
         slctDAO = new SelectDAO();
         cmb.removeAllItems();
@@ -87,8 +95,17 @@ public class FormUtils{
         voo.setDestino(destino);
         voo.setDtPartida(dtPartida.getDate());
         slctDAO = new SelectDAO();
-        model = new VooTableModel(slctDAO.getVooComParametros(voo));
-        tbl.setModel(model);     
+        modelVoo = new VooTableModel(slctDAO.getVooComParametros(voo));
+        tbl.setModel(modelVoo);     
+    }
+    
+    public void carregaListaVooPoltrona(JTable tbl, Object obj){
+        tbl.removeAll();
+        poltrona = new VooPoltrona();
+        poltrona.setVooTag(new Voo((String) obj));
+        slctDAO = new SelectDAO();
+        modelPoltrona = new VooPoltronaTableModel(slctDAO.getVooPoltronaParametros(poltrona));
+        tbl.setModel(modelPoltrona);
     }
     
     public void carregaComboBoxPoltrona(JComboBox cmb, Voo voo){
@@ -102,11 +119,29 @@ public class FormUtils{
             cmb.addItem(new Item(item.getIdtbVooPoltrona(), Integer.toString(item.getPoltrona())));
         }
     }
+    
+    public void carregaCidades(JComboBox cmb){
+        cmb.removeAllItems();
+        
+        List<Item> lstItem = GerarDados.getCidades();
+        for (Item item : lstItem) {
+            cmb.addItem(item);
+        }
+    }
+    
+    public static void isFuncionario(boolean s){
+        isFuncionario = s;
+    }
+    
+    public static boolean isFuncionario(){
+        return isFuncionario;
+    }
+    
     public FormUtils(){
         
     }
     
-    public class ItemUF{
+    public static class ItemUF{
         public ItemUF (int id, String desc){
             this.ID = id;
             this.descricao = desc;
@@ -121,7 +156,7 @@ public class FormUtils{
         }
     }
     
-    public class ItemEstado{
+    public static class ItemEstado{
          public ItemEstado (int id, String desc){
             this.ID = id;
             this.descricao = desc;
@@ -136,7 +171,7 @@ public class FormUtils{
         }
     }
     
-    public class ItemStatus{
+    public static class ItemStatus{
         
          public ItemStatus (int id, String desc){
             this.ID = id;
@@ -152,7 +187,7 @@ public class FormUtils{
         }
     }
     
-    public class Item{
+    public static class Item{
         
          public Item (int id, String desc){
             this.ID = id;

@@ -25,6 +25,7 @@ public class formCliente extends JFrame {
         objUForm = new FormUtils();
         objUForm.carregaComboBoxUF(cmbUF);
         objUForm.carregaComboBoxEstado(cmbEstado);
+        objUForm.carregaDataAtual(dtPickNascimento);
     }
     
     public formCliente(int update) {
@@ -33,6 +34,7 @@ public class formCliente extends JFrame {
         objUForm = new FormUtils();
         objUForm.carregaComboBoxUF(cmbUF);
         objUForm.carregaComboBoxEstado(cmbEstado);
+        objUForm.carregaDataAtual(dtPickNascimento);
     }
 
     /**

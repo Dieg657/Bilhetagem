@@ -9,7 +9,7 @@ package DAO;
  *
  * @author diego.soares
  */
-public final class FactoryDAO {
+public class FactoryDAO {
     public DAO getDAO(String operacao){
         if(operacao.equals("insert"))
             return new InsertDAO();

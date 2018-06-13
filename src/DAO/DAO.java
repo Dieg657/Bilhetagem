@@ -28,8 +28,6 @@ import javax.swing.table.DefaultTableModel;
  * @author diego
  */
 public abstract class DAO{
-    protected static PreparedStatement preparaSQL;
-    protected static ResultSet resultadoSQL;
     protected Empresa empresa;
     protected Cliente cliente;
     protected Voo voo;
@@ -42,17 +40,8 @@ public abstract class DAO{
     protected Passagem passagem;
     protected Status statusPoltrona;
         
-    static void closeAll() {
-        try {
-            preparaSQL.close();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage() + "\nNão foi possível encerrar o preparo da consulta!");
-        }
-        try {
-            resultadoSQL.close();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage() + "\nNão foi possível encerrar o preparo da consulta!");
-        }
+    public void closeAll() {
+
     }
     
     public abstract void insertDataDB(Object obj);

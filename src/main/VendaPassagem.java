@@ -8,6 +8,8 @@ import DAO.ClassesDB.Status;
 import DAO.SQLConnect;
 import Utilidades.GerarCidades;
 import Formulario.formPrincipal;
+import Utilidades.FormUtils;
+import Utilidades.GerarDados;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,10 +29,13 @@ public class VendaPassagem {
         
         GerarCidades.caminhoMinimo(objCidades.getCidadesConectadas().get(1), objCidades.getCidadesConectadas().get(9));
         
+        FormUtils.isFuncionario(true);
+        
         formPrincipal form = new formPrincipal();
         form.setVisible(true);
         
         SQLConnect.getInstance();
+        //GerarDados.geraVoos();
         //String sql = "SELECT * FROM tb_status";
         //Statement stmt = SQLConnect.getInstance().createStatement();
         //ResultSet rs = stmt.executeQuery(sql);
